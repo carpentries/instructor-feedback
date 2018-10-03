@@ -1,0 +1,201 @@
+workshop_type,workshop_dc_curriculum,slug_auto,recommendation_score
+dc,I don't know.,NA,NA
+dc,Genomics,2018-08-27-genentech-b,NA
+swc,NA,2018-09-20-chicago,70
+dc,I don't know.,2018-08-27-genentech-b,100
+dc,I don't know.,2018-09-10-utoronto,NA
+dc,Genomics,2018-09-10-RIVM,94
+dc,Genomics,2018-09-10-RIVM,79
+swc,NA,2018-09-13-umich,80
+swc,NA,2018-09-11-edinburgh,100
+swc,NA,2018-09-18-mq-python,85
+swc,NA,2018-09-22-emory,70
+swc,NA,2018-09-11-edinburgh,74
+dc,Ecology,2018-09-10-jax,NA
+dc,Social Sciences,2018-09-13-edinburgh,100
+swc,NA,2018-09-06-oxford,85
+dc,Ecology,2018-09-10-jax,81
+swc,NA,2018-09-20-illinois,90
+swc,NA,2018-09-22-emory,95
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,96
+swc,NA,2018-09-22-emory,100
+swc,NA,2018-09-22-emory,75
+dc,Ecology,2018-09-10-jax,100
+dc,Ecology,2018-09-10-jax,92
+swc,NA,2018-09-20-illinois,100
+dc,Genomics,2018-09-15-und-mbdh,94
+swc,NA,2018-09-22-emory,85
+dc,Ecology,2018-09-19-nwu-library-week,NA
+swc,NA,2018-09-22-UTA,80
+dc,Social Sciences,2018-09-13-edinburgh,84
+swc,NA,2018-09-20-uvi,50
+swc,NA,2018-09-11-edinburgh,NA
+dc,Social Sciences,2018-09-13-edinburgh,100
+dc,Genomics,2018-09-10-RIVM,99
+swc,NA,2018-09-20-uvi,100
+swc,NA,2018-09-21-sc,95
+swc,NA,2018-09-06-oxford,100
+dc,Social Sciences,2018-09-13-edinburgh,100
+dc,Genomics,2018-09-10-RIVM,80
+dc,Reproducible Research,2018-08-27-uwmadison-dc,100
+dc,Genomics,2018-09-10-RIVM,NA
+swc,NA,2018-09-21-sc,100
+swc,NA,2018-09-20-chicago,60
+dc,Social Sciences,2018-09-13-edinburgh,100
+dc,Ecology,2018-09-10-jax,75
+dc,Genomics,2018-09-10-RIVM,80
+swc,NA,2018-09-13-umich,88
+swc,NA,2018-09-20-uvi,100
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,90
+swc,NA,2018-09-06-oxford,90
+swc,NA,2018-09-13-umich,96
+swc,NA,2018-09-22-emory,NA
+dc,Ecology,2018-09-12-new_england_tribes_USGS,100
+swc,NA,2018-09-22-emory,75
+dc,I don't know.,2018-09-10-utoronto,100
+swc,NA,2018-09-06-oxford,80
+swc,NA,2018-09-06-oxford,100
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,97
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,100
+dc,I don't know.,2018-09-10-utoronto,88
+dc,I don't know.,2018-09-10-utoronto,NA
+swc,NA,2018-09-06-oxford,93
+swc,NA,2018-09-20-chicago,86
+swc,NA,2018-09-06-stanford,NA
+swc,NA,2018-09-22-UTA,NA
+swc,NA,2018-09-06-oxford,NA
+dc,Ecology,2018-09-12-new_england_tribes_USGS,100
+dc,Genomics,2018-09-15-und-mbdh,100
+swc,NA,2018-09-22-emory,94
+swc,NA,2018-09-06-oxford,100
+swc,NA,2018-09-22-UTA,NA
+dc,Genomics,2018-09-15-und-mbdh,90
+dc,Genomics,2018-09-10-RIVM,85
+swc,NA,2018-09-22-UTA,100
+dc,Ecology,2018-09-10-jax,98
+swc,NA,2018-09-20-uvi,95
+dc,Genomics,2018-09-10-RIVM,80
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,100
+dc,Genomics,2018-09-10-RIVM,86
+dc,I don't know.,2018-09-10-utoronto,90
+swc,NA,2018-09-18-mq-python,94
+dc,Ecology,2018-09-12-new_england_tribes_USGS,95
+swc,NA,2018-09-03-CarpentryConnect-JHB-SWC,NA
+dc,Ecology,2018-09-10-jax,70
+dc,Ecology,2018-08-27-uwmadison-dc,100
+swc,NA,workshop-template,NA
+swc,NA,2018-09-21-sc,100
+swc,NA,2018-09-11-edinburgh,100
+swc,NA,2018-09-11-edinburgh,66
+swc,NA,2018-09-21-sc,75
+swc,NA,2018-09-20-illinois,86
+swc,NA,2018-09-20-chicago,100
+dc,Social Sciences,2018-09-13-edinburgh,50
+swc,NA,2018-09-22-emory,NA
+dc,Ecology,2018-09-19-nwu-library-week,100
+swc,NA,2018-09-21-sc,90
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,100
+swc,NA,2018-09-13-umich,NA
+swc,NA,2018-09-22-UTA,90
+swc,NA,2018-09-22-UTA,95
+swc,NA,2018-09-18-mq-python,90
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,100
+swc,NA,2018-09-18-mq-python,80
+swc,NA,2018-09-22-UTA,81
+swc,NA,2018-09-13-umich,94
+dc,Social Sciences,2018-09-13-edinburgh,85
+swc,NA,2018-09-18-mq-python,NA
+dc,I don't know.,2018-09-10-utoronto,100
+swc,NA,2018-09-22-emory,92
+swc,NA,2018-09-20-uvi,100
+dc,Genomics,2018-08-27-genentech-b,100
+dc,Ecology,Swansea-2018-09-20,100
+dc,Reproducible Research,2018-09-10-utoronto,100
+swc,NA,2018-09-21-sc,100
+swc,NA,2018-09-21-sc,100
+dc,Genomics,2018-09-10-RIVM,85
+swc,NA,2018-09-21-sc,100
+dc,Ecology,2018-09-10-jax,45
+dc,I don't know.,2018-09-03-DC-Wollo,100
+dc,I don't know.,2018-09-10-utoronto,NA
+dc,Genomics,2018-09-10-RIVM,NA
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,76
+dc,Genomics,2018-09-10-RIVM,85
+dc,Genomics,2018-09-10-RIVM,100
+dc,Reproducible Research,2018-08-27-uwmadison-dc,85
+swc,NA,2018-09-22-emory,100
+dc,Ecology,2018-08-27-genentech-b,NA
+dc,Genomics,2018-09-10-RIVM,85
+swc,NA,2018-09-15-und-mbdh,97
+swc,NA,2018-09-22-emory,100
+swc,NA,2018-09-22-UTA,90
+swc,NA,2018-09-15-und-mbdh,100
+swc,NA,2018-09-22-UTA,94
+dc,Genomics,2018-09-10-RIVM,100
+dc,Genomics,2018-09-10-RIVM,80
+dc,Genomics,2018-09-10-RIVM,71
+swc,NA,2018-09-22-emory,60
+swc,NA,2018-09-13-umich,80
+dc,Genomics,2018-09-10-RIVM,90
+swc,NA,2018-09-06-oxford,97
+swc,NA,2018-09-18-mq-python,91
+dc,Genomics,2018-09-10-RIVM,80
+swc,NA,2018-09-22-emory,100
+swc,NA,2018-09-13-umich,92
+dc,Genomics,2018-09-10-RIVM,98
+dc,Ecology,2018-09-10-jax,100
+dc,Social Sciences,2018-09-13-edinburgh,98
+dc,Ecology,2018-09-10-jax,100
+swc,NA,2018-09-22-emory,77
+swc,NA,2018-09-22-UTA,83
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,NA
+swc,NA,2018-09-22-emory,100
+swc,NA,2018-09-21-sc,90
+swc,NA,2018-09-20-chicago,90
+dc,Ecology,2018-09-10-jax,100
+swc,NA,2018-09-22-UTA,100
+swc,NA,2018-09-13-umich,NA
+dc,Social Sciences,2018-09-13-edinburgh,90
+swc,NA,2018-09-06-oxford,100
+dc,Genomics,2018-08-27-genentech-b,80
+swc,NA,2018-09-21-sc,100
+dc,Genomics,2018-09-10-RIVM,90
+dc,Social Sciences,2018-09-13-edinburgh,NA
+swc,NA,2018-09-21-sc,88
+dc,Reproducible Research,2018-08-27-uwmadison-dc,85
+swc,NA,2018-09-20-chicago,NA
+swc,NA,2018-09-22-UTA,90
+dc,I don't know.,2018-09-10-jax,98
+dc,Genomics,2018-08-27-genentech-b,95
+dc,Genomics,2018-09-10-RIVM,70
+swc,NA,2018-09-22-emory,100
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,100
+dc,Reproducible Research,2018-09-10-utoronto,96
+dc,I don't know.,2018-08-27-uwmadison-dc,NA
+dc,I don't know.,2018-09-10-utoronto,20
+swc,NA,2018-09-22-emory,100
+dc,Reproducible Research,2018-09-13-edinburgh,93
+swc,NA,2018-09-20-chicago,100
+dc,Ecology,2018-09-12-new_england_tribes_USGS,100
+swc,NA,2018-10-08-purdue,NA
+swc,NA,2018-09-13-umich,55
+dc,Ecology,2018-09-19-nwu-library-week,100
+dc,NA,2018-08-22-USDA,80
+dc,Ecology,2018-09-10-jax,86
+dc,Genomics,2018-09-10-RIVM,90
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,85
+dc,Genomics,2018-09-10-RIVM,85
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,90
+swc,NA,2018-09-22-emory,100
+dc,Genomics,2018-09-10-RIVM,80
+swc,NA,2018-09-13-umich,99
+dc,Social Sciences,2018-09-13-edinburgh,90
+swc,NA,2018-09-21-sc,100
+dc,Reproducible Research,2018-08-27-uwmadison-dc,77
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,98
+swc,NA,2018-09-13-ucr,100
+swc,NA,2018-09-06-oxford,100
+dc,Genomics,2018-09-10-RIVM,90
+swc,NA,2018-09-22-emory,100
+swc,NA,2018-09-22-emory,75
+swc,NA,2018-09-21-sc,100

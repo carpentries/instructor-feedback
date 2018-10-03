@@ -1,0 +1,201 @@
+workshop_type,workshop_dc_curriculum,slug_auto,skill_data_raw,skill_write_program,skill_search_answers,skill_overcome_problem,skill_confidence_programming,skill_reproducibility_programming
+swc,NA,2018-09-06-oxford,Strongly agree,Disagree,Agree,Neutral,Disagree,Neutral
+swc,NA,2018-09-22-UTA,Agree,Agree,Agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-20-illinois,Strongly agree,Agree,Strongly agree,Agree,Agree,Agree
+swc,NA,2018-09-22-emory,Agree,Neutral,Agree,Agree,Neutral,Agree
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Agree,Agree,Neutral,Agree
+swc,NA,2018-09-22-UTA,NA,Agree,Agree,Agree,Agree,Agree
+dc,Genomics,2018-09-10-RIVM,NA,Neutral,Agree,Agree,Agree,Agree
+dc,Ecology,2018-09-10-jax,Agree,Agree,Strongly agree,Agree,Neutral,Neutral
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Agree,Agree,Neutral,Neutral,Agree
+swc,NA,2018-09-13-ucr,Strongly disagree,Strongly disagree,Strongly disagree,Disagree,Disagree,Disagree
+dc,Genomics,2018-09-15-und-mbdh,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-22-UTA,Agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-20-illinois,Strongly agree,Strongly agree,Strongly agree,Neutral,Neutral,Strongly agree
+dc,Reproducible Research,2018-08-27-uwmadison-dc,Strongly agree,Strongly agree,Agree,Strongly agree,Agree,Strongly agree
+swc,NA,2018-09-22-emory,Strongly agree,Strongly agree,Agree,Agree,Strongly agree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Agree,Neutral,Agree,Agree,Neutral,Agree
+swc,NA,2018-09-13-umich,NA,NA,NA,NA,NA,NA
+dc,Ecology,2018-09-12-new_england_tribes_USGS,Strongly agree,Strongly agree,Agree,Agree,Agree,Agree
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-20-chicago,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree,Strongly agree
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,workshop-template,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-06-oxford,Strongly agree,Strongly agree,Strongly agree,Agree,Neutral,Strongly agree
+swc,NA,2018-09-06-oxford,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree
+swc,NA,2018-09-15-und-mbdh,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-21-sc,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Agree,Agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Agree,Agree,Agree,Neutral,Agree,Agree
+dc,Ecology,2018-09-10-jax,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree
+swc,NA,2018-09-11-edinburgh,Strongly agree,Strongly agree,Strongly agree,Agree,Neutral,Strongly agree
+dc,Ecology,2018-09-12-new_england_tribes_USGS,Strongly agree,Neutral,Agree,Neutral,Strongly disagree,Strongly agree
+dc,I don't know.,2018-09-10-utoronto,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Agree,Strongly agree,Strongly agree,Agree,Agree,Agree
+swc,NA,2018-09-22-UTA,Strongly agree,Strongly agree,Agree,Strongly agree,Strongly agree,Agree
+dc,I don't know.,2018-09-10-utoronto,Strongly disagree,Agree,Agree,Agree,Neutral,Strongly agree
+dc,Ecology,2018-09-10-jax,Strongly agree,Agree,Agree,Strongly agree,Agree,Strongly agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Agree
+swc,NA,2018-09-15-und-mbdh,Agree,Strongly agree,Strongly agree,Strongly agree,Agree,Agree
+swc,NA,2018-09-13-umich,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-18-mq-python,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-06-oxford,Agree,Agree,Agree,Agree,Neutral,Agree
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Neutral,Neutral,Agree,Neutral
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Agree,Agree,Agree,Strongly agree,Strongly agree
+swc,NA,2018-09-13-umich,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree,Strongly agree
+dc,Ecology,2018-09-10-jax,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree,Strongly agree
+swc,NA,2018-09-20-chicago,Strongly agree,Disagree,Agree,Agree,Disagree,Agree
+swc,NA,2018-09-06-oxford,Strongly agree,Agree,Disagree,Disagree,Disagree,Strongly agree
+dc,Genomics,2018-08-27-genentech-b,NA,NA,NA,NA,NA,NA
+dc,I don't know.,2018-09-10-utoronto,Agree,Agree,Agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-20-illinois,Strongly agree,Agree,Agree,Neutral,Agree,Neutral
+swc,NA,2018-09-22-UTA,Agree,Neutral,Agree,Neutral,Strongly disagree,Agree
+swc,NA,2018-09-20-uvi,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Ecology,2018-09-10-jax,NA,NA,NA,NA,NA,NA
+dc,Ecology,2018-09-10-jax,Strongly agree,Agree,Strongly agree,Neutral,Disagree,Strongly agree
+swc,NA,2018-09-22-UTA,Agree,Agree,Agree,Agree,Agree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Strongly agree,Agree,Neutral,Neutral,Neutral,Strongly agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Strongly agree,Neutral,Agree,Agree,Agree,Agree
+swc,NA,2018-09-22-UTA,Agree,Agree,Strongly agree,NA,Agree,Agree
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Disagree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-13-umich,Strongly agree,Neutral,Neutral,Agree,Neutral,Strongly agree
+dc,I don't know.,2018-09-10-utoronto,NA,NA,NA,NA,NA,NA
+swc,NA,2018-10-08-purdue,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-20-chicago,Strongly agree,Neutral,Agree,Neutral,Disagree,Strongly agree
+swc,NA,2018-09-22-emory,Strongly agree,Strongly agree,Agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-20-chicago,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-20-uvi,Agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-21-sc,Strongly agree,Neutral,Agree,Neutral,Neutral,Agree
+swc,NA,2018-09-22-UTA,NA,NA,NA,NA,NA,NA
+dc,Reproducible Research,2018-09-10-utoronto,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-13-umich,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Agree,Strongly agree,Strongly agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-06-oxford,Agree,Disagree,Agree,Neutral,Disagree,Agree
+swc,NA,2018-09-22-emory,Strongly agree,Neutral,Agree,Agree,Neutral,Strongly agree
+dc,Genomics,2018-09-10-RIVM,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-22-emory,Strongly agree,Agree,Strongly agree,Agree,Agree,Strongly agree
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-13-umich,Agree,Strongly agree,Neutral,Neutral,Agree,Agree
+dc,I don't know.,NA,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-13-umich,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-22-UTA,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree
+swc,NA,2018-09-21-sc,Neutral,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-21-sc,Strongly agree,Agree,Agree,Agree,Agree,Strongly agree
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Agree,Neutral,Agree,Agree,Agree
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Neutral,Neutral,Agree,Neutral
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Agree,Strongly agree,Agree,Agree,Strongly agree
+dc,I don't know.,2018-09-10-utoronto,Strongly agree,Strongly agree,Agree,Neutral,Neutral,Agree
+dc,I don't know.,2018-09-10-utoronto,Strongly agree,Agree,Agree,Neutral,Agree,Agree
+swc,NA,2018-09-22-emory,Agree,Neutral,Agree,Agree,Neutral,Agree
+dc,NA,2018-08-22-USDA,Strongly agree,Agree,Strongly agree,Strongly agree,Agree,Agree
+swc,NA,2018-09-06-stanford,NA,NA,NA,NA,NA,NA
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Agree,Neutral,Neutral,Agree
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-22-emory,Strongly agree,Agree,Agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-22-emory,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-18-mq-python,Agree,Agree,Strongly agree,Agree,Agree,Disagree
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Agree,Neutral,Neutral,Agree
+swc,NA,2018-09-21-sc,Strongly agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-22-UTA,Agree,Agree,Agree,Agree,Agree,Agree
+dc,Genomics,2018-09-10-RIVM,Agree,Disagree,Agree,Neutral,Disagree,Agree
+dc,I don't know.,2018-08-27-genentech-b,Strongly agree,Disagree,Disagree,Disagree,Disagree,Strongly agree
+dc,Reproducible Research,2018-08-27-uwmadison-dc,Strongly disagree,Disagree,Neutral,Neutral,Neutral,Neutral
+swc,NA,2018-09-22-emory,Strongly agree,Neutral,Agree,Agree,Neutral,Agree
+swc,NA,2018-09-22-UTA,Strongly agree,Agree,Strongly agree,Strongly agree,Agree,Agree
+dc,Ecology,2018-09-10-jax,Strongly agree,Agree,Agree,Agree,Neutral,Neutral
+swc,NA,2018-09-20-chicago,Agree,Disagree,Neutral,Neutral,Disagree,Agree
+swc,NA,2018-09-21-sc,Agree,Agree,Agree,Agree,Agree,Agree
+dc,Social Sciences,2018-09-13-edinburgh,Agree,Agree,Strongly agree,Strongly agree,Agree,Agree
+swc,NA,2018-09-20-uvi,Agree,Agree,Agree,Neutral,Neutral,Neutral
+swc,NA,2018-09-11-edinburgh,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree
+swc,NA,2018-09-13-umich,Neutral,Agree,Agree,Neutral,Neutral,Strongly agree
+dc,Ecology,2018-09-10-jax,Agree,Neutral,Agree,Agree,Neutral,Neutral
+swc,NA,2018-09-22-emory,Strongly agree,Neutral,Agree,Agree,Agree,Agree
+swc,NA,2018-09-22-emory,Strongly agree,Agree,Agree,Agree,Agree,Strongly agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Strongly agree,Agree,Agree,Agree,Neutral,Strongly agree
+swc,NA,2018-09-21-sc,Neutral,Agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Ecology,2018-09-12-new_england_tribes_USGS,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree
+dc,Genomics,2018-08-27-genentech-b,Agree,Agree,Agree,Agree,Neutral,Agree
+swc,NA,2018-09-22-emory,Disagree,Neutral,Disagree,Disagree,Strongly disagree,Strongly disagree
+swc,NA,2018-09-21-sc,Agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-18-mq-python,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-22-emory,Strongly agree,Strongly agree,Agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-21-sc,Agree,Agree,Agree,Agree,Agree,Agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Strongly agree,Agree,Agree,Agree,Agree,Strongly agree
+dc,Ecology,2018-09-12-new_england_tribes_USGS,Strongly agree,Strongly disagree,Agree,Disagree,Disagree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Agree,Agree,Agree,Disagree,Agree
+swc,NA,2018-09-06-oxford,NA,NA,NA,NA,NA,NA
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Strongly agree,Neutral,Agree,Agree,Neutral,Strongly agree
+swc,NA,2018-09-22-emory,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,NA,NA,NA,NA,NA,NA
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Strongly agree,Strongly agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-22-emory,Strongly agree,Neutral,Agree,Neutral,Neutral,Agree
+dc,Reproducible Research,2018-09-13-edinburgh,Agree,Agree,Agree,Agree,Agree,Agree
+dc,Ecology,2018-09-10-jax,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-22-emory,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-06-oxford,Agree,Agree,Strongly agree,Neutral,Neutral,Strongly agree
+dc,Ecology,2018-08-27-genentech-b,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-13-umich,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Reproducible Research,2018-08-27-uwmadison-dc,Strongly agree,Neutral,Agree,Agree,Neutral,Strongly agree
+dc,Ecology,2018-09-19-nwu-library-week,Strongly agree,Agree,Strongly agree,Strongly agree,Agree,Strongly agree
+swc,NA,2018-09-11-edinburgh,Agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Ecology,2018-09-19-nwu-library-week,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-21-sc,Strongly agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-22-emory,Agree,Agree,Agree,Agree,Agree,Agree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,I don't know.,2018-08-27-uwmadison-dc,NA,NA,NA,NA,NA,NA
+dc,Ecology,2018-09-10-jax,Strongly agree,Agree,Agree,Agree,Neutral,Agree
+swc,NA,2018-09-18-mq-python,Agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-06-oxford,Agree,Agree,Agree,Neutral,Neutral,Strongly agree
+dc,Ecology,2018-09-10-jax,Strongly disagree,Neutral,Neutral,Neutral,Neutral,Disagree
+dc,Social Sciences,2018-09-13-edinburgh,Agree,Strongly agree,Strongly agree,Disagree,Disagree,Strongly agree
+dc,I don't know.,2018-09-10-jax,Strongly agree,Strongly agree,Strongly agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-18-mq-python,Agree,Agree,Agree,Agree,Agree,Agree
+dc,I don't know.,2018-09-10-utoronto,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-22-UTA,NA,NA,NA,NA,NA,NA
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Strongly agree,Strongly agree,Agree,Agree,Agree
+dc,Genomics,2018-09-15-und-mbdh,Strongly agree,Agree,Agree,Agree,Agree,Agree
+dc,I don't know.,2018-09-10-utoronto,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-22-emory,Strongly agree,Disagree,Agree,Neutral,Neutral,Strongly agree
+dc,Genomics,2018-09-15-und-mbdh,Strongly agree,NA,Strongly agree,Agree,Strongly agree,Strongly agree
+dc,Reproducible Research,2018-08-27-uwmadison-dc,Strongly agree,Agree,Agree,Disagree,Agree,Strongly agree
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-21-sc,Neutral,Neutral,Agree,Agree,Disagree,Agree
+swc,NA,2018-09-20-uvi,Agree,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree
+dc,Ecology,Swansea-2018-09-20,Strongly agree,Agree,Agree,Agree,Neutral,Strongly agree
+dc,Ecology,2018-08-27-uwmadison-dc,Strongly agree,Agree,Agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-21-sc,Agree,Agree,Agree,Agree,Agree,Agree
+dc,Reproducible Research,2018-09-10-utoronto,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Agree,Neutral,Neutral,Agree
+swc,NA,2018-09-22-emory,Agree,Strongly agree,Agree,Agree,Agree,Strongly agree
+swc,NA,2018-09-20-uvi,Agree,Agree,Strongly agree,Agree,Agree,Agree
+dc,Ecology,2018-09-10-jax,Strongly agree,Neutral,Strongly agree,Neutral,Neutral,Strongly agree
+swc,NA,2018-09-18-mq-python,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-11-edinburgh,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree,Strongly disagree
+dc,Social Sciences,2018-09-03-CarpentryConnect-JHB-Social-Sciences,Strongly agree,Agree,Agree,Disagree,Neutral,Agree
+swc,NA,2018-09-21-sc,Strongly agree,Agree,Strongly agree,Strongly agree,Agree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Neutral,Agree,Agree,Agree,Agree
+swc,NA,2018-09-22-emory,NA,NA,NA,NA,NA,NA
+swc,NA,2018-09-11-edinburgh,Agree,Agree,Agree,Agree,Agree,Agree
+swc,NA,2018-09-03-CarpentryConnect-JHB-SWC,NA,NA,NA,NA,NA,NA
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Neutral,Agree,Neutral,Neutral,Strongly agree
+swc,NA,2018-09-20-chicago,Agree,Strongly disagree,Neutral,Neutral,Disagree,Agree
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Agree,Agree,Agree,Agree
+dc,Genomics,2018-08-27-genentech-b,Agree,Agree,Agree,Agree,Agree,Agree
+dc,Genomics,2018-08-27-genentech-b,Strongly agree,Neutral,Agree,Neutral,Neutral,Strongly agree
+swc,NA,2018-09-20-chicago,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-06-oxford,Agree,Disagree,Neutral,Neutral,Neutral,Agree
+swc,NA,2018-09-22-emory,Strongly agree,Agree,Agree,Agree,Agree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Neutral,Strongly agree,Strongly agree,Neutral,Strongly agree
+dc,I don't know.,2018-09-03-DC-Wollo,Strongly agree,Strongly agree,Agree,Strongly agree,Strongly agree,Strongly agree
+swc,NA,2018-09-06-oxford,Strongly agree,Agree,Strongly agree,Strongly agree,Neutral,Agree
+dc,Social Sciences,2018-09-13-edinburgh,Strongly agree,Disagree,Agree,Neutral,Disagree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Agree,Agree,Agree,Agree,Neutral,Neutral
+dc,Ecology,2018-09-19-nwu-library-week,Strongly agree,Strongly agree,Strongly agree,Strongly agree,Agree,Strongly agree
+dc,Genomics,2018-09-10-RIVM,Strongly agree,Agree,Strongly agree,Agree,Neutral,Strongly agree
+swc,NA,2018-09-13-umich,Strongly agree,Neutral,Neutral,Disagree,Disagree,Agree
