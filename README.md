@@ -3,6 +3,8 @@ This repository was created to develop instructor feedback reports using Carpent
 
 # Short project description
 Develop a workflow to provide feedback to Carpentries’ instructors for coaching after they’ve taught a workshop.
+See [carpentries/instructor-development#70](https://github.com/carpentries/instructor-development/issues/70) for
+initial discussion.
 
 # Rationale
 We'd like to provide instructors with a useful report from their workshops as part of instructor professional development.
