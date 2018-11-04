@@ -1,12 +1,14 @@
 ---
-title: "Instructor Feedback Vis1"
+title: "Instructor Feedback Questions 1 to 3"
 author: "Katrin"
 date: "10/18/2018"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 ```
 
 ```{r}
@@ -111,9 +113,14 @@ ggplot(data = pre_dom_pl) +
   geom_text(aes(x = domain, y = n_percent_s/2, label = n_s), 
             stat = 'identity', size = 4) + 
   coord_flip() +
-  labs(y = '%', x = '') +
-  theme_void() +
-  theme(axis.text.y=element_text(size = 10)) #,
+  # remove padding on percentage axis, set limits
+  scale_y_continuous(expand = c(0,0), 
+                     limits = c(0, signif(max(pre_dom_pl$n_percent_s),1))) +
+  labs(y = '% of participants', x = '') +
+  theme_classic() +
+  theme(axis.ticks.y = element_blank(),
+        axis.line.y = element_blank(),
+        axis.text.y=element_text(size = 10))
 ```
 
 Participants in your workshop mainly have a background in `r pre_dom_pl$domain[1]`, `r pre_dom_pl$domain[2]` and `r pre_dom_pl$domain[3]`.
@@ -162,9 +169,14 @@ ggplot(data = pre_occ_pl) +
   geom_text(aes(x = occupation, y = n_percent_s/2, label = n_s), 
             stat = 'identity', size = 4) + 
   coord_flip() +
-  labs(y = '%', x = '') +
-  theme_void() +
-  theme(axis.text.y=element_text(size = 10)) #,
+  # remove padding on percentage axis, set limits
+  scale_y_continuous(expand = c(0,0), 
+                     limits = c(0, signif(max(pre_occ_pl$n_percent_s),1))) +
+  labs(y = '% of participants', x = '') +
+  theme_classic() +
+  theme(axis.ticks.y = element_blank(),
+        axis.line.y = element_blank(),
+        axis.text.y=element_text(size = 10))
 ```
 
 Most participants in your workshop will be `r pre_occ_pl$occupation[1]`, `r pre_occ_pl$occupation[2]`, and `r pre_occ_pl$occupation[3]`.
