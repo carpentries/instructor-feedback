@@ -1,0 +1,171 @@
+---
+title: "Instructor Feedback Vis1"
+author: "Katrin"
+date: "10/18/2018"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(readr)
+```
+
+## What Operation system do participants have?
+```{r}
+pre_os <- readr::read_csv('../data/20181002-pre-os-no-open.csv', na = '<NA>')
+```
+
+```{r}
+# change order of factor variable os and rename factors ('Not sure' does not contain real space, more steps in renaming ...!)
+# convert os to factor
+pre_os$os <- as.factor(pre_os$os)
+# rename levels of os, combine 'NA' and 'Not sure' to 'unknown'
+levels(pre_os$os) <- c('Mac OS', 'Linux', 'unknown', 'unknown', 'Windows')
+# re-order levels of os
+pre_os$os <- factor(pre_os$os, levels = c('Windows', 'Mac OS', 'Linux', 'unknown'))
+```
+
+```{r}
+# 1) make dataframe with counts/percentages for plotting
+pre_os_pl <- pre_os %>%
+  dplyr::group_by(os) %>%
+  dplyr::count() %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(n_percent = round(100 * n/sum(n)))
+```
+
+```{r}
+# prepare data for plotting
+pre_os_pl <- pre_os_pl %>%
+  # only show values > 2%
+  dplyr::filter(n_percent > 2) %>%
+  # sort os
+  arrange(desc(os))
+```
+
+```{r}
+# make plot
+ggplot(data = pre_os_pl, aes(x = "", y = n_percent, fill = os)) + 
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = n), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") + 
+  theme_void()
+```
+
+Most participants in your workshop will have `r pre_os_pl$os[pre_os_pl$n == max(pre_os_pl$n)]` computers.
+
+
+## What Disciplines/Domains do your participants come from?
+```{r}
+pre_dom <- read_csv('../data/20181002-pre-professional_profile-no-open.csv', na = '<NA>')
+```
+
+
+```{r}
+# separate domains
+domains <- pre_dom$domain %>%
+  strsplit(';') %>%
+  # strip quotation marks and space
+  lapply(stringi::stri_trim) %>%
+  unlist()
+# combine some similar domains from main list
+domains[domains == 'Medicine'] <- 'Biomedical or Health Sciences'
+domains[domains == 'Biomedical or Health Sciences'] <- 'Medical or Health Sciences'
+domains[domains == 'Earth Sciences'] <- 'Planetary Sciences (Geology, Climatology, Oceanography, etc.)'
+domains[domains == 'NA'] <- 'Other'
+# make a tibble with domains
+domains <- dplyr::tibble(domain = domains)
+```
+
+```{r}
+# make dataframe with counts/percentages
+pre_dom_cnt <- domains %>%
+  dplyr::group_by(domain) %>%
+  dplyr::count() %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(n_percent = round(100 * n/sum(n)))
+```
+
+```{r}
+# prepare data for plotting
+# combine rare domains (<5 percent) into group Other
+pre_dom_pl <- pre_dom_cnt %>%
+  dplyr::mutate(domain = ifelse(n_percent >= 5, domain, 'Other')) %>%
+  dplyr::group_by(domain) %>%
+  dplyr::summarise(n_percent_s = sum(n_percent), n_s = sum(n)) %>%
+  dplyr::ungroup() %>%
+  arrange(desc(n_s))
+```
+
+
+```{r}
+# make the plot
+ggplot(data = pre_dom_pl) +
+  geom_bar(aes(x = reorder(domain,n_s), y = n_percent_s), 
+           stat='identity', fill = 'grey') + 
+  geom_text(aes(x = domain, y = n_percent_s/2, label = n_s), 
+            stat = 'identity', size = 4) + 
+  coord_flip() +
+  labs(y = '%', x = '') +
+  theme_void() +
+  theme(axis.text.y=element_text(size = 10)) #,
+```
+
+Participants in your workshop mainly have a background in `r pre_dom_pl$domain[1]`, `r pre_dom_pl$domain[2]` and `r pre_dom_pl$domain[3]`.
+
+
+## What is the position/career stage of participants in your workshop?
+```{r}
+# separate occupation
+occupation <- pre_dom$occupation %>%
+  strsplit(';') %>%
+  # strip quotation marks and space
+  lapply(stringi::stri_trim) %>%
+  unlist()
+# combine some similar domains from main list
+occupation[occupation == 'NA'] <- 'Other'
+# make a tibble with occupations
+occupation <- dplyr::tibble(occupation)
+```
+
+```{r}
+# make dataframe with counts/percentages
+pre_occ_cnt <- occupation %>%
+  dplyr::group_by(occupation) %>%
+  dplyr::count() %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(n_percent = round(100 * n/sum(n)))
+```
+
+```{r}
+# prepare data for plotting
+# combine rare domains (<5 percent) into group Other
+pre_occ_pl <- pre_occ_cnt %>%
+  dplyr::mutate(occupation = ifelse(n_percent >= 5, occupation, 'Other')) %>%
+  dplyr::group_by(occupation) %>%
+  dplyr::summarise(n_percent_s = sum(n_percent), n_s = sum(n)) %>%
+  dplyr::ungroup() %>%
+  arrange(desc(n_s))
+```
+
+
+```{r}
+# make the plot
+ggplot(data = pre_occ_pl) +
+  geom_bar(aes(x = reorder(occupation,n_s), y = n_percent_s), 
+           stat='identity', fill = 'grey') + 
+  geom_text(aes(x = occupation, y = n_percent_s/2, label = n_s), 
+            stat = 'identity', size = 4) + 
+  coord_flip() +
+  labs(y = '%', x = '') +
+  theme_void() +
+  theme(axis.text.y=element_text(size = 10)) #,
+```
+
+Most participants in your workshop will be `r pre_occ_pl$occupation[1]`, `r pre_occ_pl$occupation[2]`, and `r pre_occ_pl$occupation[3]`.
+
