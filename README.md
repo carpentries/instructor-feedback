@@ -14,7 +14,6 @@ We'd like to provide instructors with a useful report from their workshops as pa
 
 # Project members 
 listed in alphabetical order  
-[Katrin Leinweber](https://github.com/katrinleinweber)  
 [Katrin Tirok](https://github.com/katrintirok)  
 [Hao Ye](https://github.com/ha0ye)  
 
