@@ -1,0 +1,6 @@
+fa_grep                 Search FontAwesome names for a pattern
+fa_list                 List all FontAwesome names
+iron                    Veritical, left-aligned layout for waffle plots
+waffle                  Make waffle (square pie) charts
+waffle-package          A package to make waffle charts (square pie
+                        charts) in R.

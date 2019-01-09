@@ -47,7 +47,7 @@ pre_os_pl <- pre_os_pl %>%
   # only show values > 2%
   dplyr::filter(n_percent > 2) %>%
   # sort os
-  arrange(desc(os))
+  arrange((os))
 ```
 
 ```{r}
@@ -60,6 +60,14 @@ ggplot(data = pre_os_pl, aes(x = "", y = n_percent, fill = os)) +
 ```
 
 Most participants in your workshop will have `r pre_os_pl$os[pre_os_pl$n == max(pre_os_pl$n)]` computers.
+
+# try a different chart - waffle chart
+```{r}
+#devtools::install_github("hrbrmstr/waffle")
+library(waffle)
+
+waffle(pre_os_pl)
+```
 
 
 ## What Disciplines/Domains do your participants come from?
@@ -117,6 +125,24 @@ ggplot(data = pre_dom_pl) +
   scale_y_continuous(expand = c(0,0), 
                      limits = c(0, signif(max(pre_dom_pl$n_percent_s),1))) +
   labs(y = '% of participants', x = '') +
+  theme_classic() +
+  theme(axis.ticks.y = element_blank(),
+        axis.line.y = element_blank(),
+        axis.text.y=element_text(size = 10))
+```
+
+```{r}
+# try a bubble chart
+ggplot(data = pre_dom_pl) +
+  geom_point(aes(x = reorder(domain,n_s), y = n_percent_s,
+                 size = n_percent_s)) +
+ # geom_text(aes(x = domain, y = n_percent_s/2, label = n_s), 
+#            stat = 'identity', size = 4) + 
+ # coord_flip() +
+  # remove padding on percentage axis, set limits
+#  scale_y_continuous(expand = c(0,0), 
+#                     limits = c(0, signif(max(pre_dom_pl$n_percent_s),1))) +
+ # labs(y = '% of participants', x = '') +
   theme_classic() +
   theme(axis.ticks.y = element_blank(),
         axis.line.y = element_blank(),
