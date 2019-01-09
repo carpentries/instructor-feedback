@@ -1,0 +1,17 @@
+bacteria                Abundance of bacteria
+circleGraphLayout       Find an arrangement of circles satisfying a
+                        graph of adjacencies
+circleLayout            Arranges circles by iterative pair-wise
+                        repulsion within a bounding rectangle
+circleLayoutVertices    Generate a set of circle vertices suitable for
+                        plotting
+circlePlotData          Generate a set of circle vertices suitable for
+                        plotting
+circleProgressiveLayout
+                        Progressive layout algorithm
+circleRemoveOverlaps    Filters a set of circles to remove all overlaps
+circleRepelLayout       Arranges circles by iterative pair-wise
+                        repulsion within a bounding rectangle
+circleVertices          Generate vertex coordinates for a circle
+packcircles             packcircles: Simple algorithms for circle
+                        packing

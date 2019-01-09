@@ -1,0 +1,62 @@
+GeomInteractiveBoxplot
+                        ggproto classes for ggiraph
+drawDetails.interactive_path_grob
+                        interactive_path_grob drawing
+drawDetails.interactive_points_grob
+                        interactive_points_grob drawing
+drawDetails.interactive_polygon_grob
+                        interactive_polygon_grob drawing
+drawDetails.interactive_polyline_grob
+                        interactive_polyline_grob drawing
+drawDetails.interactive_rect_grob
+                        interactive_rect_grob drawing
+drawDetails.interactive_segments_grob
+                        interactive_segments_grob drawing
+drawDetails.interactive_text_grob
+                        interactive_text_grob drawing
+dsvg                    SVG Graphics Driver
+dsvg_view               Run plotting code and view svg in RStudio
+                        Viewer or web broswer.
+geom_bar_interactive    interactive bars
+geom_boxplot_interactive
+                        interactive boxplot
+geom_histogram_interactive
+                        interactive boxplot
+geom_hline_interactive
+                        Horizontal interactive reference line
+geom_map_interactive    interactive polygons from a reference map.
+geom_path_interactive   interactive observations connections
+geom_point_interactive
+                        interactive points
+geom_polygon_interactive
+                        interactive polygons
+geom_rect_interactive   interactive rectangles
+geom_segment_interactive
+                        Line interactive segments
+geom_sf_interactive     interactive sf objects
+geom_text_interactive   interactive textual annotations.
+geom_vline_interactive
+                        Vertical interactive reference line
+ggiraph                 create a ggiraph object
+ggiraphOutput           Create a ggiraph output element
+girafe                  create a girafe object
+girafeOutput            Create a girafe output element
+girafe_options          set girafe options
+interactive_path_grob   Generate interactive grob paths
+interactive_points_grob
+                        Generate interactive grob points
+interactive_polygon_grob
+                        Generate interactive grob polygons
+interactive_polyline_grob
+                        Generate an Interactive Grob Path
+interactive_rect_grob   Generate interactive grob rectangles
+interactive_segments_grob
+                        Generate interactive grob segments
+interactive_text_grob   Generate interactive grob text
+opts_hover              hover effect settings
+opts_selection          selection effect settings
+opts_toolbar            toolbar settings
+opts_tooltip            tooltip settings
+opts_zoom               zoom settings
+renderGirafe            Reactive version of girafe
+renderggiraph           Reactive version of ggiraph object

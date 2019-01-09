@@ -2,6 +2,8 @@ library(shiny)
 library(tidyverse)
 library(waffle)
 library(packcircles)  # package to calculate postion of circles!
+library(viridis)
+library(ggiraph)
 
 # start shiny app with shiny::runApp('shinyapp')
 
@@ -119,7 +121,7 @@ ui <- shinyUI(pageWithSidebar(
                               'swc' = 'Software Carpentry')),
   
     selectInput(inputId = 'plottype', label = 'Choose a plot type:',
-                choices = c('barplot', 'circleplot'))
+                choices = c('barplot','circleplot'))
     
     #checkboxInput('outliers', 'Show outliers', FALSE)
   ),
@@ -129,7 +131,12 @@ ui <- shinyUI(pageWithSidebar(
     textOutput(outputId = 'question1'),
     plotOutput(outputId = 'osPlot'),
     textOutput(outputId = 'question2'),
-    plotOutput(outputId = 'domPlot'),
+    conditionalPanel(condition = "input.plottype == 'barplot'",
+                     plotOutput(outputId = 'domPlotbar')
+                     ),
+    conditionalPanel(condition = "input.plottype == 'circleplot'",
+                     ggiraphOutput(outputId = 'domPlotcircle')
+                     ),
     textOutput(outputId = 'question3'),
     plotOutput(outputId = 'occPlot')
   )
@@ -209,9 +216,9 @@ server <- shinyServer(function(input, output){
   }) # end plot 1
   
   # start plot 2 - barplot
-  output$domPlot <- renderPlot(width = 500, height = 250, {
-    #validate(need(input$plottype == "barplot", message=FALSE))
-    if(input$plottype == 'barplot'){ # barplot
+  output$domPlotbar <- renderPlot(width = 500, height = 250, {
+    validate(need(input$plottype == "barplot", message=FALSE))
+    #if(input$plottype == 'barplot'){ # barplot
       ggplot(data = pre_dom_pl) +
         geom_bar(aes(x = reorder(domain,n_s), y = n_percent_s), 
                  stat='identity', fill = 'grey') + 
@@ -228,30 +235,38 @@ server <- shinyServer(function(input, output){
         theme(axis.ticks.y = element_blank(),
               axis.line.y = element_blank(),
               axis.text.y=element_text(size = 10))
-    } else { # circleplot
-      # Generate the layout. This function return a dataframe with one line per bubble. 
-      # It gives its center (x and y) and its radius, proportional of the value
-      packing <- circleProgressiveLayout(pre_dom_pl$n_s, sizetype='area')
-      # We can add these packing information to the initial data frame
-      data = cbind(pre_dom_pl, packing)
-      # Check that radius is proportional to value. We don't want a linear relationship, since it is the AREA that must be proportionnal to the value
-      plot(data$radius, data$n_s)
-      # The next step is to go from one center + a radius to the coordinates of a circle that
-      # is drawn by a multitude of straight lines.
-      dat.gg <- circleLayoutVertices(packing, npoints=50)
-      # Make the plot
-      ggplot() + 
-        # Make the bubbles
-        geom_polygon(data = dat.gg, aes(x, y, group = id, fill=as.factor(id)), colour = "black", alpha = 0.6) +
-        # Add text in the center of each bubble + control its size
-        geom_text(data = data, aes(x, y, label = domain)) +   #size=n_s, 
-        scale_size_continuous(range = c(1,4)) +
-        # General theme:
-        theme_void() + 
-        theme(legend.position="none") +
-        coord_equal()
-    } #end if else statement
-  }) # end plot 2
+  })# end plot 2 - barplot
+  
+  # start plot 2 - circle plot  
+  output$domPlotcircle <- renderggiraph({
+    validate(need(input$plottype == "circleplot", message=FALSE))
+    
+    # Create data
+    data <- pre_pl(x = pre_dom_cnt, column_comb = 'domain', percent_comb = 0)
+    
+    #data$text <- domain
+    data$text_short <- stringr::str_sub(data$domain, start=1, end=3)
+    # Add a column with the text you want to display for each bubble:
+    data$text <- paste(data$domain, "\n", "n =", data$n_s)
+    
+    # Generate the layout
+    packing <- circleProgressiveLayout(data$n_s, sizetype='area')
+    data = cbind(data, packing)
+    dat.gg <- circleLayoutVertices(packing, npoints=50)
+    
+    # Make the plot with a few differences compared to the static version:
+    p=ggplot() + 
+      geom_polygon_interactive(data = dat.gg, aes(x, y, group = id, fill=id, tooltip = data$text[id], data_id = id), colour = "black", alpha = 0.6) +
+      scale_fill_distiller(type = "div", palette = 'Spectral',direction = 1) +
+      #scale_fill_viridis() +
+      geom_text(data = data, aes(x, y, label = text_short), size=5, color="black") +
+      theme_void() + 
+      theme(legend.position="none", plot.margin=unit(c(0,0,0,0),"cm") ) + 
+      coord_equal()
+    
+    # final interactive plot
+    ggiraph(ggobj = p, width_svg = 7, height_svg = 7)
+  }) # end plot 2 circle plot
   
 }) # end server
 

@@ -1,0 +1,35 @@
+Package: packcircles
+Type: Package
+Version: 0.3.3
+Title: Circle Packing
+Description: Simple algorithms for circle packing.
+Date: 2018-09-18
+Authors@R: c(
+  person("Michael", "Bedward", role = c("aut", "cre"), email = "michael.bedward@gmail.com"),
+  person("David", "Eppstein", role = "aut", email = "david.eppstein@gmail.com", 
+         comment = "Author of Python code for graph-based circle packing ported to C++ for this package"),
+  person("Peter", "Menzel", role = "aut", email = "pmenzel@gmail.com",
+         comment = "Author of C code for progressive circle packing ported to C++ for this package")
+  )
+URL: https://github.com/mbedward/packcircles
+BugReports: https://github.com/mbedward/packcircles/issues
+Depends: R (>= 3.2)
+Imports: Rcpp (>= 0.12.18)
+Suggests: ggiraph, ggplot2, knitr, rmarkdown, lpSolve
+VignetteBuilder: knitr
+LinkingTo: Rcpp (>= 0.12.10)
+LazyData: true
+License: MIT + file LICENSE
+RoxygenNote: 6.0.1
+NeedsCompilation: yes
+Packaged: 2018-09-18 06:06:17 UTC; mbedward
+Author: Michael Bedward [aut, cre],
+  David Eppstein [aut] (Author of Python code for graph-based circle
+    packing ported to C++ for this package),
+  Peter Menzel [aut] (Author of C code for progressive circle packing
+    ported to C++ for this package)
+Maintainer: Michael Bedward <michael.bedward@gmail.com>
+Repository: CRAN
+Date/Publication: 2018-09-18 06:30:03 UTC
+Built: R 3.5.0; x86_64-apple-darwin15.6.0; 2018-09-25 18:26:59 UTC; unix
+Archs: packcircles.so.dSYM
