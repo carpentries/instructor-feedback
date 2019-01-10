@@ -14,7 +14,7 @@ We'd like to provide instructors with a useful report from their workshops as pa
 
 # Project Members and Collaborators
 listed in alphabetical order  
-[Ben Marwick](https://github.com/benmarwick)
+[Ben Marwick](https://github.com/benmarwick)   
 [Katrin Tirok](https://github.com/katrintirok)   
 
 # Reports
