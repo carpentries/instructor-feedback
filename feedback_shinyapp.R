@@ -44,18 +44,20 @@ pre_pl <- function(x, column_comb, percent_comb = 2){
 }
 
 # ----- data import and pre-preparation -----
-pre_os <- readr::read_csv('data/20181002-pre-os-no-open.csv', na = '<NA>')
+pre_os <- readr::read_csv('data/20181002-pre-os-no-open.csv', 
+                          na = '<NA>')
 # change order of factor variable os and rename factors ('Not sure' does not contain real space, more steps in renaming ...!)
 # convert os to factor
 pre_os$os <- as.factor(pre_os$os)
 # rename levels of os, combine 'NA' and 'Not sure' to 'unknown'
 levels(pre_os$os) <- c('Mac OS', 'Linux', 'unknown', 'unknown', 'Windows')
 # re-order levels of os
-pre_os$os <- factor(pre_os$os, levels = c('Windows', 'Mac OS', 'Linux', 'unknown'))
+pre_os$os <- factor(pre_os$os, 
+                    levels = c('Windows', 'Mac OS', 'Linux', 'unknown'))
  
 
-## ----- What Disciplines/Domains do your participants come from? -----
-pre_dom <- read_csv('data/20181002-pre-professional_profile-no-open.csv', 
+## ----- what Domains/Occupation do your participants come from? -----
+pre_dom <- readr::read_csv('data/20181002-pre-professional_profile-no-open.csv', 
                     na = '<NA>')
 
 # ---- domains ----
@@ -64,51 +66,42 @@ domains <- sep_str(pre_dom$domain)
 domains[domains == 'Medicine'] <- 'Biomedical or Health Sciences'
 domains[domains == 'Biomedical or Health Sciences'] <- 'Medical or Health Sciences'
 domains[domains == 'Earth Sciences'] <- 'Planetary Sciences (Geology, Climatology, Oceanography, etc.)'
-#domains[domains == 'NA'] <- 'Other'
 # make a tibble with domains
 domains <- dplyr::tibble(domain = domains)
 
 # make dataframe with counts/percentages
-pre_dom_cnt <- pre_cnt(domains, 'domain')
+pre_dom_cnt <- pre_cnt(domains, 
+                       groupvar = 'domain')
 
 # prepare data for plotting
-# combine rare domains (<5 percent) into group Other
-pre_dom_pl <- pre_pl(pre_dom_cnt, column_comb = 'domain', percent_comb = 2)
+# combine rare domains (<xx percent) into group Other
+pre_dom_pl <- pre_pl(pre_dom_cnt, 
+                     column_comb = 'domain', 
+                     percent_comb = 2)
 
 
+# ---- occupations ----
+occupation <- sep_str(pre_dom$occupation)
 
-## ----- What is the position/career stage of participants in your workshop? -----
-# separate occupation
-occupation <- pre_dom$occupation %>%
-  strsplit(';') %>%
-  # strip quotation marks and space
-  lapply(stringi::stri_trim) %>%
-  unlist()
-# combine some similar domains from main list
-occupation[occupation == 'NA'] <- 'Other'
 # make a tibble with occupations
 occupation <- dplyr::tibble(occupation)
 
 # make dataframe with counts/percentages
-pre_occ_cnt <- occupation %>%
-  dplyr::group_by(occupation) %>%
-  dplyr::count() %>%
-  dplyr::ungroup() %>%
-  dplyr::mutate(n_percent = round(100 * n/sum(n)))
+pre_occ_cnt <- pre_cnt(occupation, 
+                       groupvar = 'occupation')
 
 # prepare data for plotting
-# combine rare domains (<5 percent) into group Other
-pre_occ_pl <- pre_occ_cnt %>%
-  dplyr::mutate(occupation = ifelse(n_percent >= 5, occupation, 'Other')) %>%
-  dplyr::group_by(occupation) %>%
-  dplyr::summarise(n_percent_s = sum(n_percent), n_s = sum(n)) %>%
-  dplyr::ungroup() %>%
-  arrange(desc(n_s))
+# combine rare domains (<xx percent) into group Other
+pre_occ_pl <- pre_pl(pre_occ_cnt, 
+                     column_comb = 'occupation', 
+                     percent_comb = 2)
 
 
 
 # ----- define UI (user interface object) for application -----
-ui <- shinyUI(pageWithSidebar(
+ui <- shinyUI(
+  pageWithSidebar(
+    
   # Application title
   headerPanel('Instructor Feedback'),
   
@@ -121,10 +114,9 @@ ui <- shinyUI(pageWithSidebar(
   
     selectInput(inputId = 'plottype', label = 'Choose a plot type:',
                 choices = c('barplot','circleplot'))
-    
-    #checkboxInput('outliers', 'Show outliers', FALSE)
-  ),
+  ), # end sidebarPanel
   
+  # main panel with text and visualisations
   mainPanel(
     h3(textOutput(outputId = 'caption')),
     textOutput(outputId = 'question1'),
@@ -137,9 +129,16 @@ ui <- shinyUI(pageWithSidebar(
                      ggiraphOutput(outputId = 'domPlotcircle')
                      ),
     textOutput(outputId = 'question3'),
-    plotOutput(outputId = 'occPlot')
-  )
-))
+    conditionalPanel(condition = "input.plottype == 'barplot'",
+                     plotOutput(outputId = 'occPlotbar')
+    ),
+    conditionalPanel(condition = "input.plottype == 'circleplot'",
+                     ggiraphOutput(outputId = 'occPlotcircle')
+    )
+  ) # end mainPanel
+  ) # end pageWithSidebar
+) # end shinyUI
+
 
 
 # ----- define server logic required to plot various variables -----
@@ -160,7 +159,6 @@ server <- shinyServer(function(input, output){
     # make dataframe with counts/percentages for plotting
     pre_cnt(groupvar = 'os')
   })
-  
   
   domInput <- reactive({
     switch(input$variable,
@@ -196,25 +194,19 @@ server <- shinyServer(function(input, output){
           sep = '')
   })
   
-#  output$question3 <- renderText({
-#    paste('Most participants in your workshop will be ',
-#          occInput()$occupation[1], occInput()$occupation[2], occInput()$occupation[3])
-#  })
+  output$question3 <- renderText({
+    paste('Most participants in your workshop will be ',
+          pre_occ_pl$occupation[1], pre_occ_pl$occupation[2], ', and', pre_occ_pl$occupation[3])
+  })
 
   
-  # ---- generate plots of the requested variable ----
-  # start plot 1
+  # ---- generate plots of the requested variables ----
+  # ---- start plot 1 - operation system ----
   output$osPlot <- renderPlot(width = 250, height = 250, {
-    #ggplot(data = osInput(), 
-    #             aes(x = "", y = n_percent, fill = os)) + 
-    #  geom_bar(stat = "identity") +
-    #  geom_text(aes(label = n), position = position_stack(vjust = 0.5)) +
-    #  coord_polar(theta = "y") + 
-    #  theme_void()
     waffle(osInput())
   }) # end plot 1
   
-  # start plot 2 - barplot
+  # ---- start plot 2 - barplot for domain ----
   output$domPlotbar <- renderPlot(width = 500, height = 250, {
     validate(need(input$plottype == "barplot", message=FALSE))
     #if(input$plottype == 'barplot'){ # barplot
@@ -236,7 +228,7 @@ server <- shinyServer(function(input, output){
               axis.text.y=element_text(size = 10))
   })# end plot 2 - barplot
   
-  # start plot 2 - circle plot  
+  # ---- start plot 2 - circle plot for domain ----
   output$domPlotcircle <- renderggiraph({
     validate(need(input$plottype == "circleplot", message=FALSE))
     
@@ -265,7 +257,60 @@ server <- shinyServer(function(input, output){
     
     # final interactive plot
     ggiraph(ggobj = p, width_svg = 7, height_svg = 7)
-  }) # end plot 2 circle plot
+  }) # end plot 2 circle plot - domain
+
+  
+  # ---- start plot 3 - barplot for occupation ----
+  output$occPlotbar <- renderPlot(width = 500, height = 250, {
+    validate(need(input$plottype == "barplot", message=FALSE))
+    ggplot(data = pre_occ_pl) +
+      geom_bar(aes(x = reorder(occupation,n_s), y = n_percent_s), 
+               stat='identity', fill = 'grey') + 
+      geom_text(aes(x = occupation, y = n_percent_s/2, label = n_s), 
+                stat = 'identity', size = 4) + 
+      coord_flip() +
+      # remove padding on percentage axis, set limits
+      scale_y_continuous(expand = c(0,0), 
+                         limits = c(0, ifelse(signif(max(pre_occ_pl$n_percent_s),1)>=max(pre_occ_pl$n_percent_s),
+                                              signif(max(pre_occ_pl$n_percent_s),1), 
+                                              signif(max(pre_occ_pl$n_percent_s),1)+10))) +
+      labs(y = '% of participants', x = '') +
+      theme_classic() +
+      theme(axis.ticks.y = element_blank(),
+            axis.line.y = element_blank(),
+            axis.text.y=element_text(size = 10))
+  })# end plot 3 - barplot - occupation
+  
+  # ---- start plot 3 - circle plot for occupation ----
+  output$occPlotcircle <- renderggiraph({
+    validate(need(input$plottype == "circleplot", message=FALSE))
+    
+    # Create data
+    data <- pre_pl(x = pre_occ_cnt, column_comb = 'occupation', percent_comb = 0)
+    
+    data$text_short <- stringr::str_sub(data$occupation, start=1, end=3)
+    # Add a column with the text you want to display for each bubble:
+    data$text <- paste(data$occupation, "\n", "n =", data$n_s)
+    
+    # Generate the layout
+    packing <- circleProgressiveLayout(data$n_s, sizetype='area')
+    data = cbind(data, packing)
+    dat.gg <- circleLayoutVertices(packing, npoints=50)
+    
+    # Make the plot
+    p=ggplot() + 
+      geom_polygon_interactive(data = dat.gg, aes(x, y, group = id, fill=id, tooltip = data$text[id], data_id = id), colour = "black", alpha = 0.6) +
+      scale_fill_distiller(type = "div", palette = 'Spectral',direction = 1) +
+      #scale_fill_viridis() +
+      geom_text(data = data, aes(x, y, label = text_short), size=5, color="black") +
+      theme_void() + 
+      theme(legend.position="none", plot.margin=unit(c(0,0,0,0),"cm") ) + 
+      coord_equal()
+    
+    # final interactive plot
+    ggiraph(ggobj = p, width_svg = 7, height_svg = 7)
+  }) # end plot 2 circle plot - occupation
+  
   
 }) # end server
 
