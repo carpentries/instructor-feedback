@@ -11,7 +11,7 @@ library(ggiraph)
 # function make dataframe with counts/percentages
 pre_cnt <- function(x, groupvar){
   x_out <- x %>%
-    dplyr::group_by_(.dots = groupvar) %>%  # use group_by_() evaluate content of groupvar!
+    dplyr::group_by_(.dots = groupvar) %>%  # using group_by_() evaluates content of groupvar!
     dplyr::count() %>%
     dplyr::ungroup() %>%
     dplyr::mutate(n_percent = round(100 * n/sum(n)))
@@ -29,7 +29,7 @@ sep_str <- function(x){
 }
 
 # function prepare for plot, combine rare domains (<xx percent) into group Other, sort
-pre_pl <- function(x, column_comb, percent_comb = 2){
+pre_pl <- function(x, column_comb, percent_comb = 5){
   for(index in seq(1, dim(x)[1])){
     if(x[index,'n_percent'] < percent_comb){
       x[index,column_comb] <- 'Other' 
@@ -46,25 +46,25 @@ pre_pl <- function(x, column_comb, percent_comb = 2){
 
 # ----- plot functions -----
 circleplot <- function(x){
-  # Create data
-  data <- pre_pl(x, column_comb = 'group', percent_comb = 0)
-  data$text_short <- stringr::str_sub(data$group, start=1, end=3)
+  pl_data <- x
+  # add display text to data
+  pl_data$text_short <- stringr::str_sub(pl_data$group, start=1, end=3)
   # Add a column with the text you want to display for each bubble:
-  data$text <- paste(data$group, "\n", "n =", data$n_s)
+  pl_data$text <- paste(pl_data$group, "\n", "n =", pl_data$n_s)
   
   # Generate the layout
-  packing <- circleProgressiveLayout(data$n_s, sizetype='area')
-  data = cbind(data, packing)
+  packing <- circleProgressiveLayout(pl_data$n_s, sizetype='area')
+  pl_data = cbind(pl_data, packing)
   dat.gg <- circleLayoutVertices(packing, npoints=50)
   
   # Make the plot
   p=ggplot() + 
     geom_polygon_interactive(data = dat.gg, 
-                             aes(x, y, group = id, fill=id, tooltip = data$text[id], data_id = id), 
+                             aes(x, y, group = id, fill=id, tooltip = pl_data$text[id], data_id = id), 
                              colour = "black", alpha = 0.6) +
     scale_fill_distiller(type = "div", palette = 'Spectral',direction = 1) +
     #scale_fill_viridis() +
-    geom_text(data = data, aes(x, y, label = text_short), size=5, color="black") +
+    geom_text(data = pl_data, aes(x, y, label = text_short), size=5, color="black") +
     theme_void() + 
     theme(legend.position="none", plot.margin=unit(c(0,0,0,0),"cm") ) + 
     coord_equal()
@@ -112,7 +112,7 @@ pre_os$os <- factor(pre_os$os,
                     levels = c('Windows', 'Mac OS', 'Linux', 'unknown'))
 # make dataframe with counts/percentages
 pre_os_cnt <- pre_cnt(pre_os, 
-                      groupvar = 'os') 
+                      groupvar = 'os')
 
 ## ----- Which domains/occupation do your participants come from? -----
 pre_dom <- readr::read_csv('data/20181002-pre-professional_profile-no-open.csv', 
@@ -131,12 +131,6 @@ domains <- dplyr::tibble(group = domains)
 pre_dom_cnt <- pre_cnt(domains, 
                        groupvar = 'group')
 
-# prepare data for plotting
-# combine rare domains (<xx percent) into group Other
-pre_dom_pl <- pre_pl(pre_dom_cnt, 
-                     column_comb = 'group', 
-                     percent_comb = 2)
-
 
 # ---- occupations ----
 occupation <- sep_str(pre_dom$occupation)
@@ -148,13 +142,6 @@ occupation <- dplyr::tibble(group = occupation)
 pre_occ_cnt <- pre_cnt(occupation, 
                        groupvar = 'group')
 
-# prepare data for plotting
-# combine rare domains (<xx percent) into group Other
-pre_occ_pl <- pre_pl(pre_occ_cnt, 
-                     column_comb = 'group', 
-                     percent_comb = 2)
-
-
 
 # ----- define UI (user interface object) for application -----
 ui <- shinyUI(
@@ -165,11 +152,10 @@ ui <- shinyUI(
   
   # sidebar with controls to select the variable to plot 
   sidebarPanel(
-   # selectInput(inputId = 'variable',
-  #              label = 'Variable:',
-   #             choices = list('dc' = 'Data Carpentry',
-   #                           'swc' = 'Software Carpentry')),
-  
+    # make a slider to choose which domains/careers to show
+    sliderInput(inputId = 'percent_choose', label = 'Choose how many categories to show (based on percentage)',
+                min = 0, max = 20, value = 5, step = 1, round = TRUE, pre = 'categories > ', post = '%', dragRange = FALSE),
+    # 
     selectInput(inputId = 'plottype', label = 'Choose a plot type for question 2 & 3:',
                 choices = c('barplot','circleplot'))
   ), # end sidebarPanel
@@ -224,18 +210,19 @@ server <- shinyServer(function(input, output){
   
   output$question2 <- renderText({
     paste('Participants in your workshop mainly have a background in ',
-          pre_dom_pl$group[1], ', ', pre_dom_pl$group[2], ', and ', pre_dom_pl$group[3], '.', sep = '')
+          pre_dom_cnt$group[1], ', ', pre_dom_cnt$group[2], ', and ', pre_dom_cnt$group[3], '.', sep = '')
   })
   
   output$question3 <- renderText({
     paste('Most participants in your workshop will be ',
-          pre_occ_pl$group[1], ', ', pre_occ_pl$group[2], ', and', pre_occ_pl$group[3], '.', sep = '')
+          pre_occ_cnt$group[1], ', ', pre_occ_cnt$group[2], ', and ', pre_occ_cnt$group[3], '.', sep = '')
   })
 
   
   # ---- generate plots of the requested variables ----
   # ---- start plot 1 - operation system ----
   output$osPlot <- renderPlot({ #width = 300, height = 300, {
+    # prepare data for plotting
     waffle(pre_os_cnt,
            legend_pos = 'top')
     }) # end plot 1
@@ -243,6 +230,11 @@ server <- shinyServer(function(input, output){
   # ---- start plot 2 - barplot for domain ----
   output$domPlotbar <- renderPlot(width = 500, height = 250, {
     validate(need(input$plottype == "barplot", message=FALSE))
+    # prepare data for plotting
+    # combine rare domains (<xx percent) into group Other based on input slider
+    pre_dom_pl <- pre_pl(pre_dom_cnt, 
+                         column_comb = 'group', 
+                         percent_comb = input$percent_choose)
     # call custom function barplot_cust() to make the plot
     barplot_cust(pre_dom_pl)
   })# end plot 2 - barplot
@@ -250,14 +242,23 @@ server <- shinyServer(function(input, output){
   # ---- start plot 2 - circle plot for domain ----
   output$domPlotcircle <- renderggiraph({
     validate(need(input$plottype == "circleplot", message=FALSE))
+    # prepare data for plotting
+    pre_dom_pl <- pre_pl(pre_dom_cnt, 
+                   column_comb = 'group', 
+                   percent_comb = input$percent_choose)
     # call custom function circleplot() to make the plot
-    circleplot(pre_dom_cnt)
+    circleplot(pre_dom_pl)
   }) # end plot 2 circle plot - domain
 
   
   # ---- start plot 3 - barplot for occupation ----
   output$occPlotbar <- renderPlot(width = 500, height = 250, {
     validate(need(input$plottype == "barplot", message=FALSE))
+    # prepare data for plotting
+    # combine rare domains (<xx percent) into group Other based on input slider
+    pre_occ_pl <- pre_pl(pre_occ_cnt, 
+                         column_comb = 'group', 
+                         percent_comb = input$percent_choose)
     # call custom function barplot_cust() to make the plot
     barplot_cust(pre_occ_pl)
   })# end plot 3 - barplot - occupation
@@ -265,8 +266,12 @@ server <- shinyServer(function(input, output){
   # ---- start plot 3 - circle plot for occupation ----
   output$occPlotcircle <- renderggiraph({
     validate(need(input$plottype == "circleplot", message=FALSE))
+    # prepare data for plotting
+    pre_occ_pl <- pre_pl(pre_occ_cnt, 
+                         column_comb = 'group', 
+                         percent_comb = input$percent_choose)
     # call function circleplot() to make the plot
-    circleplot(pre_occ_cnt)
+    circleplot(pre_occ_pl)
   }) # end plot 2 circle plot - occupation
   
 }) # end server
