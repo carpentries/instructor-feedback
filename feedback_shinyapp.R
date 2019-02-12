@@ -14,7 +14,8 @@ pre_cnt <- function(x, groupvar){
     dplyr::group_by_(.dots = groupvar) %>%  # using group_by_() evaluates content of groupvar!
     dplyr::count() %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(n_percent = round(100 * n/sum(n)))
+    dplyr::mutate(n_percent = round(100 * n/sum(n))) %>% 
+    arrange(desc(n_percent))
   return(x_out)
 }
 
@@ -43,6 +44,47 @@ pre_pl <- function(x, column_comb, percent_comb = 5){
     arrange(desc(n_s))
   return(x_out)
 }
+
+# function omit na values, omit columns, reshape data into long format 
+data_long <- function(x, columns_to_remove = c(1:3)){
+  x_out <- x %>% 
+    na.omit() %>% 
+    select(-columns_to_remove) %>% 
+    gather(key = question, value = level)
+} #end function
+
+# function make question and levels a factor with custom re-ordered levels, make numeric level variable
+data_factor <- function(x, question_levels, question_labels, answer_levels){
+  x_out <- x %>% 
+    mutate(question = factor(question, levels = question_levels, labels = question_labels)) %>% 
+    mutate(level = factor(level, levels = answer_levels)) %>% 
+    mutate(level_weight = NA)
+  for(i in 1:length(levels(x_out$level))){
+    x_out$level_weight[x_out$level == levels(x_out$level)[i]] = i
+  } #end for loop
+  return(x_out)
+} #end function
+
+# assign numeric values to agreement levels
+levels_num <- function(x){
+  x_out <- x %>%
+    mutate(level_weight = ifelse(level == 'Strongly disagree', 1, 
+                                 ifelse(level == 'Disagree', 2, 
+                                        ifelse(level == 'Neutral', 3,
+                                               ifelse(level == 'Agree', 4, 5)))))
+  return(x_out)
+}
+
+# function mean levels
+levels_mean <- function(x){
+  x_out <- x %>% 
+    group_by(question) %>% 
+    summarise(mean_level = mean(level_weight), std_level = sd(level_weight),
+              min_level = min(level_weight), max_level = max(level_weight),
+              median_level = median(level_weight))
+  return(x_out)
+}
+
 
 # ----- plot functions -----
 circleplot <- function(x){
@@ -92,6 +134,22 @@ barplot_cust <- function(x){
           axis.text.y=element_text(size = 10))
 } # end function barplot_cust
 
+# function violin plot to show distribution
+violin_plot <- function(data_violin, data_point, col_violin='skyblue', col_point='blue'){
+  p <- ggplot() +
+    geom_violin(data = data_violin, aes(x = question, y = level_weight), color = NA, fill = col_violin, alpha = 0.3) + 
+    geom_point(data = data_point, aes(x = question, y = mean_level), size = 3, color = col_point) +
+    scale_y_continuous(breaks = 1:length(levels(data_violin$level)),
+                       labels = levels(data_violin$level)) +
+    coord_flip() +
+    theme_classic() +
+    theme(axis.title = element_blank(),
+          panel.border = element_rect(fill = NA),
+          text = element_text(size = 16),
+          axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+  return(p)
+}
 
 # ----- data import and pre-preparation -----
 # ----- Which operation system do participants have? -----
@@ -142,6 +200,33 @@ occupation <- dplyr::tibble(group = occupation)
 pre_occ_cnt <- pre_cnt(occupation, 
                        groupvar = 'group')
 
+# ----- usage -----
+usage <- read_csv('data/20181002-pre-usage_profile-no-open.csv')
+usage_lng <- data_long(usage, c(1:2,8))
+# define custom question text
+question_levels <- unique(usage_lng$question)
+question_labels <- c('command line', 'version control system', 'databases', 
+                     'programming language', 'statistical software with GUI')
+answer_levels <- c('Never', 'Less than once per year', 'Several times per year',
+                   'Monthly', 'Weekly', 'Daily')
+# make questions and answers a factor
+usage_fact <- data_factor(usage_lng, question_levels, question_labels, answer_levels)
+# average levels
+usage_levels_mean <- levels_mean(usage_fact)
+
+# ----- skill -----
+skill <- read_csv('data/20181002-pre-skill_pre-no-open.csv')
+skill_long <- data_long(skill)
+question_levels = c('skill_efficient_programming','skill_reproducibility_programming','skill_confidence_programming',
+           'skill_overcome_problem','skill_search_answers','skill_write_program','skill_data_raw')
+question_labels = c('programming makes analysis efficient',
+           'programming makes analysis reproducible','confident to use programming', 'can overcome problem',
+           'can search for answers','can write program','raw data important')
+answer_levels = c('Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree')
+skill_fact <- data_factor(skill_long, question_levels, question_labels, answer_levels)
+skill_lnum <- levels_num(skill_fact)
+skill_mean <- levels_mean(skill_lnum)
+
 
 # ----- define UI (user interface object) for application -----
 ui <- shinyUI(
@@ -156,29 +241,33 @@ ui <- shinyUI(
     sliderInput(inputId = 'percent_choose', label = 'Choose how many categories to show (based on percentage)',
                 min = 0, max = 20, value = 5, step = 1, round = TRUE, pre = 'categories > ', post = '%', dragRange = FALSE),
     # 
-    selectInput(inputId = 'plottype', label = 'Choose a plot type for question 2 & 3:',
-                choices = c('barplot','circleplot'))
+    selectInput(inputId = 'plottype', label = 'Choose a plot type for domain and career stage:',
+                choices = c('circleplot','barplot'))
   ), # end sidebarPanel
   
   # main panel with text and visualisations
   mainPanel(
     h3(textOutput(outputId = 'caption')),
-    textOutput(outputId = 'question1'),
+    h4(textOutput(outputId = 'os_heading')),
+    textOutput(outputId = 'os'),
     plotOutput(outputId = 'osPlot'),
-    textOutput(outputId = 'question2'),
+    h4(textOutput(outputId = 'dom_heading')),
+    textOutput(outputId = 'dom'),
     conditionalPanel(condition = "input.plottype == 'barplot'",
-                     plotOutput(outputId = 'domPlotbar')
-                     ),
+                     plotOutput(outputId = 'domPlotbar')),
     conditionalPanel(condition = "input.plottype == 'circleplot'",
-                     ggiraphOutput(outputId = 'domPlotcircle')
-                     ),
-    textOutput(outputId = 'question3'),
+                     ggiraphOutput(outputId = 'domPlotcircle')),
+    h4(textOutput(outputId = 'occ_heading')),
+    textOutput(outputId = 'occ'),
     conditionalPanel(condition = "input.plottype == 'barplot'",
-                     plotOutput(outputId = 'occPlotbar')
-    ),
+                     plotOutput(outputId = 'occPlotbar')),
     conditionalPanel(condition = "input.plottype == 'circleplot'",
-                     ggiraphOutput(outputId = 'occPlotcircle')
-    )
+                     ggiraphOutput(outputId = 'occPlotcircle')),
+    h4(textOutput(outputId = 'use_heading')),
+    plotOutput(outputId = 'useViolin'),
+    h4(textOutput(outputId = 'skill_heading')),
+    plotOutput(outputId = 'skillViolin'),
+    h4(textOutput(outputId = 'reason_heading'))
   ) # end mainPanel
   ) # end pageWithSidebar
 ) # end shinyUI
@@ -194,30 +283,54 @@ server <- shinyServer(function(input, output){
     paste('Results from the pre-workshop survey for your upcoming ', 
           workshoptype, 'Workshop')
   })
-  
   # return the formula text for printing as a caption
   output$caption <- renderText({
     formulaText()
   })
   
-  
-  # ---- Print text ----
-  output$question1 <- renderText({
+  # ----- operation system ---
+  output$os_heading <- renderText({
+    'Which operation system do the participants have?'
+  })
+  output$os <- renderText({
     paste('Most participants in your workshop will have',
           pre_os_cnt$os[pre_os_cnt$n==max(pre_os_cnt$n)], 
           'computers.')
   })
   
-  output$question2 <- renderText({
+  # ----- domain -----
+  output$dom_heading <- renderText({
+    'Which domain are the participants come from?'
+  })
+  output$dom <- renderText({
     paste('Participants in your workshop mainly have a background in ',
           pre_dom_cnt$group[1], ', ', pre_dom_cnt$group[2], ', and ', pre_dom_cnt$group[3], '.', sep = '')
   })
   
-  output$question3 <- renderText({
+  # ----- occupation -----
+  output$occ_heading <- renderText({
+    'At which career stage are the participants?'
+  })
+  output$occ <- renderText({
     paste('Most participants in your workshop will be ',
           pre_occ_cnt$group[1], ', ', pre_occ_cnt$group[2], ', and ', pre_occ_cnt$group[3], '.', sep = '')
   })
 
+  # ----- usage of software -----
+  output$use_heading <- renderText({
+    'What is the usage of different programs?'
+  })
+  
+  # ----- skills -----
+  output$skill_heading <- renderText({
+    'What are the programming skills of participants?'
+  })
+  
+  # ----- reason attend -----
+  output$reason_heading <- renderText({
+    'What are the reasons of participants to attend the workshop?'
+  })
+  
   
   # ---- generate plots of the requested variables ----
   # ---- start plot 1 - operation system ----
@@ -273,6 +386,17 @@ server <- shinyServer(function(input, output){
     # call function circleplot() to make the plot
     circleplot(pre_occ_pl)
   }) # end plot 2 circle plot - occupation
+  
+  # ----- start plot 4 - violin plot of usage ----
+  output$useViolin <- renderPlot({
+    violin_plot(usage_fact, usage_levels_mean)
+  }) #end plot4
+  
+  # ----- start plot 5 - violin plot of skill ----
+  output$skillViolin <- renderPlot({
+    violin_plot(skill_lnum, skill_mean)
+  })
+  
   
 }) # end server
 
