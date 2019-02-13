@@ -4,6 +4,9 @@ library(waffle)
 library(packcircles)  # package to calculate postion of circles!
 library(viridis)
 library(ggiraph)
+library(Cairo)
+
+options(shiny.usecairo=T)
 
 # start shiny app with shiny::runApp('shinyapp')
 
@@ -112,7 +115,7 @@ circleplot <- function(x){
     coord_equal()
   
   # final interactive plot
-  ggiraph(ggobj = p, width_svg = 7, height_svg = 7)
+  girafe(ggobj = p, width_svg = 7, height_svg = 7)
 } # end function circleplot
 
 barplot_cust <- function(x){
@@ -136,9 +139,11 @@ barplot_cust <- function(x){
 
 # function violin plot to show distribution
 violin_plot <- function(data_violin, data_point, col_violin='skyblue', col_point='blue'){
-  p <- ggplot() +
+  p = ggplot() +
     geom_violin(data = data_violin, aes(x = question, y = level_weight), color = NA, fill = col_violin, alpha = 0.3) + 
-    geom_point(data = data_point, aes(x = question, y = mean_level), size = 3, color = col_point) +
+    geom_point_interactive(data = data_point, aes(x = question, y = mean_level, 
+                                                  tooltip = paste('mean score =', as.character(round(mean_level,1))), data_id = as.character(round(mean_level,1))), 
+                           size = 3, color = col_point) +
     scale_y_continuous(breaks = 1:length(levels(data_violin$level)),
                        labels = levels(data_violin$level)) +
     coord_flip() +
@@ -148,8 +153,35 @@ violin_plot <- function(data_violin, data_point, col_violin='skyblue', col_point
           text = element_text(size = 16),
           axis.text.x = element_text(angle = 45, hjust = 1)
     )
-  return(p)
+  
+  girafe(ggobj = p, width_svg = 7, height_svg = 7)
 }
+
+# stem plot
+stem_plot <- function(pl_data){
+  x_var <- reorder(pl_data$group, pl_data$n_s)
+  p <- ggplot(data = pl_data) +
+  geom_segment(aes(x = x_var, xend = x_var, 
+                    y=0, yend=n_percent_s), color="skyblue") +
+  geom_point(aes(x = x_var, y = n_percent_s), color="blue", size=4, alpha=0.6) +
+  geom_text(aes(x = x_var, y = 0, label = x_var), 
+            stat = 'identity', size = 6, nudge_x = 0.35, hjust = 'left' ) + 
+  geom_text(aes(x = x_var, y = n_percent_s + 0.75, label = paste(n_s, ' (', n_percent_s, '%)', sep = '')), 
+            stat = 'identity', size = 5, hjust = 'left') + 
+  coord_flip() +
+  labs(y = '% of participants', x = '') +
+  theme_void() + 
+  theme(plot.margin = unit(c(0.25,2,0.25,0.25),"cm"))
+
+  # turn off clipping of text
+  library(grid)
+  gt <- ggplot_gtable(ggplot_build(p))
+  gt$layout$clip[gt$layout$name == "panel"] <- "off"
+  p2 <- grid.draw(gt, recording = F)
+
+  return(p2)
+} # end function
+
 
 # ----- data import and pre-preparation -----
 # ----- Which operation system do participants have? -----
@@ -227,6 +259,18 @@ skill_fact <- data_factor(skill_long, question_levels, question_labels, answer_l
 skill_lnum <- levels_num(skill_fact)
 skill_mean <- levels_mean(skill_lnum)
 
+# ----- reason for attending -----
+reason <- read_csv('data/20181002-pre-reason_attending-no-open.csv')
+# split strings
+attend <- sep_str(reason$why_attend)
+# make a tibble with attend reasons
+attends <- dplyr::tibble(group = attend)
+# make dataframe with counts/percentages
+pre_att_cnt <- pre_cnt(attends, groupvar = 'group')
+# replace missing values with 'unknown'
+pre_att_cnt <- pre_att_cnt %>% 
+  replace_na(list(group = 'Unknown'))
+
 
 # ----- define UI (user interface object) for application -----
 ui <- shinyUI(
@@ -239,7 +283,7 @@ ui <- shinyUI(
   sidebarPanel(
     # make a slider to choose which domains/careers to show
     sliderInput(inputId = 'percent_choose', label = 'Choose how many categories to show (based on percentage)',
-                min = 0, max = 20, value = 5, step = 1, round = TRUE, pre = 'categories > ', post = '%', dragRange = FALSE),
+                min = 0, max = 20, value = 2, step = 1, round = TRUE, pre = 'categories > ', post = '%', dragRange = FALSE),
     # 
     selectInput(inputId = 'plottype', label = 'Choose a plot type for domain and career stage:',
                 choices = c('circleplot','barplot'))
@@ -247,10 +291,12 @@ ui <- shinyUI(
   
   # main panel with text and visualisations
   mainPanel(
+    fluidRow(
+      column(10, align="center",
     h3(textOutput(outputId = 'caption')),
     h4(textOutput(outputId = 'os_heading')),
     textOutput(outputId = 'os'),
-    plotOutput(outputId = 'osPlot'),
+    plotOutput(outputId = 'osPlot', width = "60%"),
     h4(textOutput(outputId = 'dom_heading')),
     textOutput(outputId = 'dom'),
     conditionalPanel(condition = "input.plottype == 'barplot'",
@@ -263,11 +309,15 @@ ui <- shinyUI(
                      plotOutput(outputId = 'occPlotbar')),
     conditionalPanel(condition = "input.plottype == 'circleplot'",
                      ggiraphOutput(outputId = 'occPlotcircle')),
+    h4(textOutput(outputId = 'reason_heading')),
+    plotOutput(outputId = 'attendStem', width = "95%"),
     h4(textOutput(outputId = 'use_heading')),
-    plotOutput(outputId = 'useViolin'),
+    textOutput(outputId = 'use_text'),
+    ggiraphOutput(outputId = 'useViolin'),
     h4(textOutput(outputId = 'skill_heading')),
-    plotOutput(outputId = 'skillViolin'),
-    h4(textOutput(outputId = 'reason_heading'))
+    textOutput(outputId = 'skill_text'),
+    ggiraphOutput(outputId = 'skillViolin')
+  )) # end fluid row
   ) # end mainPanel
   ) # end pageWithSidebar
 ) # end shinyUI
@@ -315,20 +365,26 @@ server <- shinyServer(function(input, output){
     paste('Most participants in your workshop will be ',
           pre_occ_cnt$group[1], ', ', pre_occ_cnt$group[2], ', and ', pre_occ_cnt$group[3], '.', sep = '')
   })
+  
+  # ----- reason attend -----
+  output$reason_heading <- renderText({
+    'What are the reasons of participants to attend the workshop?'
+  })
 
   # ----- usage of software -----
   output$use_heading <- renderText({
     'What is the usage of different programs?'
+  })
+  output$use_text <- renderText({
+    'Average usage of all participants on top of distribution (usage levels were translated to scores 1 to 6 before calculations)'
   })
   
   # ----- skills -----
   output$skill_heading <- renderText({
     'What are the programming skills of participants?'
   })
-  
-  # ----- reason attend -----
-  output$reason_heading <- renderText({
-    'What are the reasons of participants to attend the workshop?'
+  output$skill_text <- renderText({
+    'Average skills of all participants on top of distribution (agreement levels were translated to scores 1 to 5 before calculations)'
   })
   
   
@@ -387,15 +443,26 @@ server <- shinyServer(function(input, output){
     circleplot(pre_occ_pl)
   }) # end plot 2 circle plot - occupation
   
-  # ----- start plot 4 - violin plot of usage ----
-  output$useViolin <- renderPlot({
-    violin_plot(usage_fact, usage_levels_mean)
-  }) #end plot4
+  # ----- start plot 4 - stem plot for reason attend -----
+  output$attendStem <- renderPlot({
+    # prepare data for plotting
+    pre_att_pl <- pre_pl(pre_att_cnt, 
+                         column_comb = 'group', 
+                         percent_comb = input$percent_choose)
+    # make the plot
+    stem_plot(pre_att_pl)
+  }) #end plot 4
   
-  # ----- start plot 5 - violin plot of skill ----
-  output$skillViolin <- renderPlot({
+  # ----- start plot 5 - violin plot of usage ----
+  output$useViolin <- renderggiraph({
+    violin_plot(usage_fact, usage_levels_mean)
+  }) #end plot 5
+  
+  # ----- start plot 6 - violin plot of skill ----
+  output$skillViolin <- renderggiraph({
     violin_plot(skill_lnum, skill_mean)
-  })
+  }) #end plot 6
+  
   
   
 }) # end server
