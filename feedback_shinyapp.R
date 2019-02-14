@@ -3,15 +3,16 @@ library(tidyverse)
 library(waffle)
 library(packcircles)  # package to calculate postion of circles!
 library(viridis)
-library(ggiraph)
+library(ggiraph)  # interactive graphs
 library(Cairo)
 
+# usecairo = T from package Cairo for better quality of figures in shiny app
 options(shiny.usecairo=T)
 
 # start shiny app with shiny::runApp('shinyapp')
 
 # ---- functions for data preparation ----
-# function make dataframe with counts/percentages
+# function to make dataframe with counts/percentages of categories
 pre_cnt <- function(x, groupvar){
   x_out <- x %>%
     dplyr::group_by_(.dots = groupvar) %>%  # using group_by_() evaluates content of groupvar!
@@ -20,9 +21,9 @@ pre_cnt <- function(x, groupvar){
     dplyr::mutate(n_percent = round(100 * n/sum(n))) %>% 
     arrange(desc(n_percent))
   return(x_out)
-}
+} #end function
 
-# function separate strings
+# function to separate strings
 sep_str <- function(x){
   require(dplyr)
   x_out <- x %>%
@@ -30,15 +31,17 @@ sep_str <- function(x){
     lapply(stringi::stri_trim) %>%
     unlist()
   return(x_out)
-}
+} #end function
 
-# function prepare for plot, combine rare domains (<xx percent) into group Other, sort
-pre_pl <- function(x, column_comb, percent_comb = 5){
+# function to prepare data for plot, combine rare domains (<xx percent) into group Other, sort
+pre_pl <- function(x, column_comb, percent_comb = 2){
+  # check each row whether minimum percentage reached, if not change name of category to 'Other'
   for(index in seq(1, dim(x)[1])){
     if(x[index,'n_percent'] < percent_comb){
       x[index,column_comb] <- 'Other' 
-    } 
-  }
+    } #end if statement
+  } #end for loop
+  # recalculate n and percentage with category 'Other'
   x_out <- x %>%
     dplyr::group_by_(column_comb) %>%
     dplyr::summarise(n_s = sum(n)) %>%
@@ -46,9 +49,9 @@ pre_pl <- function(x, column_comb, percent_comb = 5){
     dplyr::ungroup() %>%
     arrange(desc(n_s))
   return(x_out)
-}
+} #end function
 
-# function omit na values, omit columns, reshape data into long format 
+# function to omit na values, omit columns, reshape data into long format 
 data_long <- function(x, columns_to_remove = c(1:3)){
   x_out <- x %>% 
     na.omit() %>% 
@@ -56,7 +59,7 @@ data_long <- function(x, columns_to_remove = c(1:3)){
     gather(key = question, value = level)
 } #end function
 
-# function make question and levels a factor with custom re-ordered levels, make numeric level variable
+# function to make question and levels a factor with custom re-ordered levels, make a variable with numeric score for each level
 data_factor <- function(x, question_levels, question_labels, answer_levels){
   x_out <- x %>% 
     mutate(question = factor(question, levels = question_levels, labels = question_labels)) %>% 
@@ -68,7 +71,7 @@ data_factor <- function(x, question_levels, question_labels, answer_levels){
   return(x_out)
 } #end function
 
-# assign numeric values to agreement levels
+# function to assign numeric values to agreement levels
 levels_num <- function(x){
   x_out <- x %>%
     mutate(level_weight = ifelse(level == 'Strongly disagree', 1, 
@@ -76,9 +79,9 @@ levels_num <- function(x){
                                         ifelse(level == 'Neutral', 3,
                                                ifelse(level == 'Agree', 4, 5)))))
   return(x_out)
-}
+} #end function
 
-# function mean levels
+# function to calculate mean and other stats of level scores
 levels_mean <- function(x){
   x_out <- x %>% 
     group_by(question) %>% 
@@ -86,18 +89,19 @@ levels_mean <- function(x){
               min_level = min(level_weight), max_level = max(level_weight),
               median_level = median(level_weight))
   return(x_out)
-}
+} #end function
 
 
 # ----- plot functions -----
+# function to make an interactive circleplot
 circleplot <- function(x){
   pl_data <- x
-  # add display text to data
+  # add display text to data for interactivity
   pl_data$text_short <- stringr::str_sub(pl_data$group, start=1, end=3)
   # Add a column with the text you want to display for each bubble:
   pl_data$text <- paste(pl_data$group, "\n", "n =", pl_data$n_s)
   
-  # Generate the layout
+  # Generate the layout of circles
   packing <- circleProgressiveLayout(pl_data$n_s, sizetype='area')
   pl_data = cbind(pl_data, packing)
   dat.gg <- circleLayoutVertices(packing, npoints=50)
@@ -114,10 +118,11 @@ circleplot <- function(x){
     theme(legend.position="none", plot.margin=unit(c(0,0,0,0),"cm") ) + 
     coord_equal()
   
-  # final interactive plot
+  # display final interactive plot
   girafe(ggobj = p, width_svg = 7, height_svg = 7)
 } # end function circleplot
 
+# function for customised barplot
 barplot_cust <- function(x){
   ggplot(data = x) +
     geom_bar(aes(x = reorder(group,n_s), y = n_percent_s), 
@@ -137,13 +142,16 @@ barplot_cust <- function(x){
           axis.text.y=element_text(size = 10))
 } # end function barplot_cust
 
-# function violin plot to show distribution
+# function for violin plot to show distribution with interactive points of mean scores
 violin_plot <- function(data_violin, data_point, col_violin='skyblue', col_point='blue'){
   p = ggplot() +
+    # the violin plot to show score distribution
     geom_violin(data = data_violin, aes(x = question, y = level_weight), color = NA, fill = col_violin, alpha = 0.3) + 
+    # the dot plot displaying mean score when hovering over 
     geom_point_interactive(data = data_point, aes(x = question, y = mean_level, 
                                                   tooltip = paste('mean score =', as.character(round(mean_level,1))), data_id = as.character(round(mean_level,1))), 
                            size = 3, color = col_point) +
+    # show text levels as axis label instead of numeric scores
     scale_y_continuous(breaks = 1:length(levels(data_violin$level)),
                        labels = levels(data_violin$level)) +
     coord_flip() +
@@ -154,18 +162,21 @@ violin_plot <- function(data_violin, data_point, col_violin='skyblue', col_point
           axis.text.x = element_text(angle = 45, hjust = 1)
     )
   
+  # display final interactive plot
   girafe(ggobj = p, width_svg = 7, height_svg = 7)
-}
+} #end function violin_plot
 
-# stem plot
+# function for stem plot
 stem_plot <- function(pl_data){
   x_var <- reorder(pl_data$group, pl_data$n_s)
   p <- ggplot(data = pl_data) +
   geom_segment(aes(x = x_var, xend = x_var, 
                     y=0, yend=n_percent_s), color="skyblue") +
   geom_point(aes(x = x_var, y = n_percent_s), color="blue", size=4, alpha=0.6) +
+  # add text on top of stem, the question
   geom_text(aes(x = x_var, y = 0, label = x_var), 
             stat = 'identity', size = 6, nudge_x = 0.35, hjust = 'left' ) + 
+  # add text at end of stem, the count and percentage of answers
   geom_text(aes(x = x_var, y = n_percent_s + 0.75, label = paste(n_s, ' (', n_percent_s, '%)', sep = '')), 
             stat = 'identity', size = 5, hjust = 'left') + 
   coord_flip() +
@@ -173,14 +184,14 @@ stem_plot <- function(pl_data){
   theme_void() + 
   theme(plot.margin = unit(c(0.25,2,0.25,0.25),"cm"))
 
-  # turn off clipping of text
+  # turn off clipping of text at the end of plot area
   library(grid)
   gt <- ggplot_gtable(ggplot_build(p))
   gt$layout$clip[gt$layout$name == "panel"] <- "off"
   p2 <- grid.draw(gt, recording = F)
 
   return(p2)
-} # end function
+} # end function stem_plot
 
 
 # ----- data import and pre-preparation -----
@@ -207,8 +218,7 @@ pre_os_cnt <- pre_cnt(pre_os,
 ## ----- Which domains/occupation do your participants come from? -----
 pre_dom <- readr::read_csv('data/20181002-pre-professional_profile-no-open.csv', 
                     na = '<NA>')
-
-# ---- domains ----
+# --- split up listed domains from each observation ---
 domains <- sep_str(pre_dom$domain)
 # combine some similar domains from main list
 domains[domains == 'Medicine'] <- 'Biomedical or Health Sciences'
@@ -216,50 +226,51 @@ domains[domains == 'Biomedical or Health Sciences'] <- 'Medical or Health Scienc
 domains[domains == 'Earth Sciences'] <- 'Planetary Sciences (Geology, Climatology, Oceanography, etc.)'
 # make a tibble with domains
 domains <- dplyr::tibble(group = domains)
-
-# make dataframe with counts/percentages
+# make dataframe with counts/percentages of domains
 pre_dom_cnt <- pre_cnt(domains, 
                        groupvar = 'group')
 
-
-# ---- occupations ----
+# --- split up listed domains from each observation ---
 occupation <- sep_str(pre_dom$occupation)
-
 # make a tibble with occupations
 occupation <- dplyr::tibble(group = occupation)
-
-# make dataframe with counts/percentages
+# make dataframe with counts/percentages of occupations
 pre_occ_cnt <- pre_cnt(occupation, 
                        groupvar = 'group')
 
-# ----- usage -----
+# ----- What is the usage of different types of software? -----
 usage <- read_csv('data/20181002-pre-usage_profile-no-open.csv')
-usage_lng <- data_long(usage, c(1:2,8))
-# define custom question text
-question_levels <- unique(usage_lng$question)
+# convert data to long format
+usage_long <- data_long(usage, c(1:2,8))
+# define custom question text for display with plot
+question_levels <- unique(usage_long$question)
 question_labels <- c('command line', 'version control system', 'databases', 
                      'programming language', 'statistical software with GUI')
 answer_levels <- c('Never', 'Less than once per year', 'Several times per year',
                    'Monthly', 'Weekly', 'Daily')
 # make questions and answers a factor
-usage_fact <- data_factor(usage_lng, question_levels, question_labels, answer_levels)
-# average levels
+usage_fact <- data_factor(usage_long, question_levels, question_labels, answer_levels)
+# calculate average usage
 usage_levels_mean <- levels_mean(usage_fact)
 
-# ----- skill -----
+# ----- What is the skill? -----
 skill <- read_csv('data/20181002-pre-skill_pre-no-open.csv')
+# convert data to long format
 skill_long <- data_long(skill)
+# define custom question text for display with plot
 question_levels = c('skill_efficient_programming','skill_reproducibility_programming','skill_confidence_programming',
            'skill_overcome_problem','skill_search_answers','skill_write_program','skill_data_raw')
 question_labels = c('programming makes analysis efficient',
            'programming makes analysis reproducible','confident to use programming', 'can overcome problem',
            'can search for answers','can write program','raw data important')
 answer_levels = c('Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree')
+# make questions and answers a factor
 skill_fact <- data_factor(skill_long, question_levels, question_labels, answer_levels)
+# calculate average usage
 skill_lnum <- levels_num(skill_fact)
 skill_mean <- levels_mean(skill_lnum)
 
-# ----- reason for attending -----
+# ----- What are reasons for attending? -----
 reason <- read_csv('data/20181002-pre-reason_attending-no-open.csv')
 # split strings
 attend <- sep_str(reason$why_attend)
@@ -271,7 +282,7 @@ pre_att_cnt <- pre_cnt(attends, groupvar = 'group')
 pre_att_cnt <- pre_att_cnt %>% 
   replace_na(list(group = 'Unknown'))
 
-
+# ----- start the shiny app specific part -----
 # ----- define UI (user interface object) for application -----
 ui <- shinyUI(
   pageWithSidebar(
@@ -279,44 +290,72 @@ ui <- shinyUI(
   # Application title
   headerPanel('Instructor Feedback'),
   
-  # sidebar with controls to select the variable to plot 
+  # sidebar with controls to select variables to plot etc.
   sidebarPanel(
-    # make a slider to choose which domains/careers to show
+    # make a checkbox to choose which questions to display
+    checkboxGroupInput(inputId = 'question_choose', label = 'Choose which questions to display', 
+                       choices = c('operation system','domain','occupation','reason to attend','usage of programs','skills'), 
+                       selected = 'operation system', inline = FALSE
+                       ), # end checkbox
+    # make a slider to choose how many domains/careers to show depending on percentage
     sliderInput(inputId = 'percent_choose', label = 'Choose how many categories to show (based on percentage)',
-                min = 0, max = 20, value = 2, step = 1, round = TRUE, pre = 'categories > ', post = '%', dragRange = FALSE),
-    # 
+                min = 0, max = 20, value = 2, step = 1, round = TRUE, pre = 'categories > ', post = '%', dragRange = FALSE
+                ), # end slider
+    # make drop down selection menu to choose a plot type for domain and occupation
     selectInput(inputId = 'plottype', label = 'Choose a plot type for domain and career stage:',
-                choices = c('circleplot','barplot'))
+                choices = c('circleplot','barplot')
+                ) # end select
   ), # end sidebarPanel
   
   # main panel with text and visualisations
+  # (text and vis are shown in the order they appear here)
   mainPanel(
+    # use fluidRow with aling='center' to center all text, vis ...
     fluidRow(
-      column(10, align="center",
+      column(width = 10, align = "center",
+    # start with actual output to display
     h3(textOutput(outputId = 'caption')),
-    h4(textOutput(outputId = 'os_heading')),
-    textOutput(outputId = 'os'),
-    plotOutput(outputId = 'osPlot', width = "60%"),
-    h4(textOutput(outputId = 'dom_heading')),
-    textOutput(outputId = 'dom'),
-    conditionalPanel(condition = "input.plottype == 'barplot'",
-                     plotOutput(outputId = 'domPlotbar')),
-    conditionalPanel(condition = "input.plottype == 'circleplot'",
-                     ggiraphOutput(outputId = 'domPlotcircle')),
-    h4(textOutput(outputId = 'occ_heading')),
-    textOutput(outputId = 'occ'),
-    conditionalPanel(condition = "input.plottype == 'barplot'",
-                     plotOutput(outputId = 'occPlotbar')),
-    conditionalPanel(condition = "input.plottype == 'circleplot'",
-                     ggiraphOutput(outputId = 'occPlotcircle')),
-    h4(textOutput(outputId = 'reason_heading')),
-    plotOutput(outputId = 'attendStem', width = "95%"),
-    h4(textOutput(outputId = 'use_heading')),
-    textOutput(outputId = 'use_text'),
-    ggiraphOutput(outputId = 'useViolin'),
-    h4(textOutput(outputId = 'skill_heading')),
-    textOutput(outputId = 'skill_text'),
-    ggiraphOutput(outputId = 'skillViolin')
+    # start os vis
+    conditionalPanel(condition = "input.question_choose.includes('operation system')",  #condition needs to be in javascript code!
+                     h4(textOutput(outputId = 'os_heading')),
+                     textOutput(outputId = 'os'),
+                     plotOutput(outputId = 'osPlot', width = "60%")
+                     ), #end os vis
+    # start domain vis
+    conditionalPanel(condition = "input.question_choose.includes('domain')",
+                     h4(textOutput(outputId = 'dom_heading')),
+                     textOutput(outputId = 'dom'),
+                     conditionalPanel(condition = "input.plottype == 'barplot'",
+                                      plotOutput(outputId = 'domPlotbar')),
+                     conditionalPanel(condition = "input.plottype == 'circleplot'",
+                                      ggiraphOutput(outputId = 'domPlotcircle'))
+                     ), #end domain vis
+    # start occupation vis
+    conditionalPanel(condition = "input.question_choose.includes('occupation')",
+                     h4(textOutput(outputId = 'occ_heading')),
+                     textOutput(outputId = 'occ'),
+                     conditionalPanel(condition = "input.plottype == 'barplot'",
+                                      plotOutput(outputId = 'occPlotbar')),
+                     conditionalPanel(condition = "input.plottype == 'circleplot'",
+                                      ggiraphOutput(outputId = 'occPlotcircle'))
+                     ), #end occupation vis
+    # start reason attend vis
+    conditionalPanel(condition = "input.question_choose.includes('reason to attend')",
+                     h4(textOutput(outputId = 'reason_heading')),
+                     plotOutput(outputId = 'attendStem', width = "95%")
+                     ), #end reason attend vis
+    # start usage vis
+    conditionalPanel(condition = "input.question_choose.includes('usage of programs')",
+                     h4(textOutput(outputId = 'use_heading')),
+                     textOutput(outputId = 'use_text'),
+                     ggiraphOutput(outputId = 'useViolin')
+                     ), #end usage vis
+    # start skill vis
+    conditionalPanel(condition = "input.question_choose.includes('skills')",
+                     h4(textOutput(outputId = 'skill_heading')),
+                     textOutput(outputId = 'skill_text'),
+                     ggiraphOutput(outputId = 'skillViolin')
+                     ) #end skill vis
   )) # end fluid row
   ) # end mainPanel
   ) # end pageWithSidebar
