@@ -119,7 +119,7 @@ circleplot <- function(x){
     coord_equal()
   
   # display final interactive plot
-  girafe(ggobj = p, width_svg = 7, height_svg = 7)
+  girafe(ggobj = p)
 } # end function circleplot
 
 # function for customised barplot
@@ -143,7 +143,7 @@ barplot_cust <- function(x){
 } # end function barplot_cust
 
 # function for violin plot to show distribution with interactive points of mean scores
-violin_plot <- function(data_violin, data_point, col_violin='skyblue', col_point='blue'){
+violin_plot <- function(data_violin, data_point, col_violin='skyblue', col_point='blue', girafe = TRUE){
   p = ggplot() +
     # the violin plot to show score distribution
     geom_violin(data = data_violin, aes(x = question, y = level_weight), color = NA, fill = col_violin, alpha = 0.3) + 
@@ -161,9 +161,12 @@ violin_plot <- function(data_violin, data_point, col_violin='skyblue', col_point
           text = element_text(size = 16),
           axis.text.x = element_text(angle = 45, hjust = 1)
     )
-  
+  if(girafe == TRUE){
   # display final interactive plot
-  girafe(ggobj = p, width_svg = 7, height_svg = 7)
+  girafe(ggobj = p)
+  }else{
+    return(p)
+  }#end if
 } #end function violin_plot
 
 # function for stem plot
@@ -195,6 +198,7 @@ stem_plot <- function(pl_data){
 
 
 # ----- data import and pre-preparation -----
+### DATA IMPORT NEEDS TO BE AUTOMATED! ###
 # ----- Which operation system do participants have? -----
 pre_os <- readr::read_csv('data/20181002-pre-os-no-open.csv', 
                           na = '<NA>')
@@ -238,6 +242,18 @@ occupation <- dplyr::tibble(group = occupation)
 pre_occ_cnt <- pre_cnt(occupation, 
                        groupvar = 'group')
 
+# ----- What are reasons for attending? -----
+reason <- read_csv('data/20181002-pre-reason_attending-no-open.csv')
+# split strings
+attend <- sep_str(reason$why_attend)
+# make a tibble with attend reasons
+attends <- dplyr::tibble(group = attend)
+# make dataframe with counts/percentages
+pre_att_cnt <- pre_cnt(attends, groupvar = 'group')
+# replace missing values with 'unknown'
+pre_att_cnt <- pre_att_cnt %>% 
+  replace_na(list(group = 'Unknown'))
+
 # ----- What is the usage of different types of software? -----
 usage <- read_csv('data/20181002-pre-usage_profile-no-open.csv')
 # convert data to long format
@@ -253,112 +269,154 @@ usage_fact <- data_factor(usage_long, question_levels, question_labels, answer_l
 # calculate average usage
 usage_levels_mean <- levels_mean(usage_fact)
 
-# ----- What is the skill? -----
-skill <- read_csv('data/20181002-pre-skill_pre-no-open.csv')
+# ----- What is the skill before workshop? -----
+skill_pre <- read_csv('data/20181002-pre-skill_pre-no-open.csv')
 # convert data to long format
-skill_long <- data_long(skill)
+skill_pre_long <- data_long(skill_pre)
 # define custom question text for display with plot
-question_levels = c('skill_efficient_programming','skill_reproducibility_programming','skill_confidence_programming',
-           'skill_overcome_problem','skill_search_answers','skill_write_program','skill_data_raw')
-question_labels = c('programming makes analysis efficient',
-           'programming makes analysis reproducible','confident to use programming', 'can overcome problem',
-           'can search for answers','can write program','raw data important')
-answer_levels = c('Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree')
+skillqu_levels = c('skill_efficient_programming','skill_reproducibility_programming','skill_confidence_programming',
+                 'skill_overcome_problem','skill_search_answers','skill_write_program','skill_data_raw')
+skillqu_labels = c('programming makes analysis efficient',
+                 'programming makes analysis reproducible','confident to use programming', 'can overcome problem',
+                 'can search for answers','can write program','raw data important')
+skillans_levels = c('Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree')
 # make questions and answers a factor
-skill_fact <- data_factor(skill_long, question_levels, question_labels, answer_levels)
+skill_pre_fact <- data_factor(skill_pre_long, skillqu_levels, skillqu_labels, skillans_levels)
 # calculate average usage
-skill_lnum <- levels_num(skill_fact)
-skill_mean <- levels_mean(skill_lnum)
+skill_pre_lnum <- levels_num(skill_pre_fact)
+skill_pre_mean <- levels_mean(skill_pre_lnum)
 
-# ----- What are reasons for attending? -----
-reason <- read_csv('data/20181002-pre-reason_attending-no-open.csv')
-# split strings
-attend <- sep_str(reason$why_attend)
-# make a tibble with attend reasons
-attends <- dplyr::tibble(group = attend)
-# make dataframe with counts/percentages
-pre_att_cnt <- pre_cnt(attends, groupvar = 'group')
-# replace missing values with 'unknown'
-pre_att_cnt <- pre_att_cnt %>% 
-  replace_na(list(group = 'Unknown'))
+# ----- What is the skill after workshop? -----
+skill_post <- read_csv('data/20181002-post-skills-no-open.csv')
+# convert data to long format
+skill_post_long <- data_long(skill_post)
+# make questions and answers a factor
+skill_post_fact <- data_factor(skill_post_long, skillqu_levels, skillqu_labels, skillans_levels)
+# calculate average usage
+skill_post_lnum <- levels_num(skill_post_fact)
+skill_post_mean <- levels_mean(skill_post_lnum)
 
-# ----- start the shiny app specific part -----
+# ----- end of data import -----
+
+
+# ----- start of shiny app specific part -----
 # ----- define UI (user interface object) for application -----
-ui <- shinyUI(
-  pageWithSidebar(
-    
+ui <-  fluidPage(
+
   # Application title
-  headerPanel('Instructor Feedback'),
+  titlePanel('Instructor Feedback'),
   
-  # sidebar with controls to select variables to plot etc.
-  sidebarPanel(
-    # make a checkbox to choose which questions to display
-    checkboxGroupInput(inputId = 'question_choose', label = 'Choose which questions to display', 
-                       choices = c('operation system','domain','occupation','reason to attend','usage of programs','skills'), 
-                       selected = 'operation system', inline = FALSE
-                       ), # end checkbox
-    # make a slider to choose how many domains/careers to show depending on percentage
-    sliderInput(inputId = 'percent_choose', label = 'Choose how many categories to show (based on percentage)',
-                min = 0, max = 20, value = 2, step = 1, round = TRUE, pre = 'categories > ', post = '%', dragRange = FALSE
-                ), # end slider
-    # make drop down selection menu to choose a plot type for domain and occupation
-    selectInput(inputId = 'plottype', label = 'Choose a plot type for domain and career stage:',
-                choices = c('circleplot','barplot')
-                ) # end select
-  ), # end sidebarPanel
-  
-  # main panel with text and visualisations
-  # (text and vis are shown in the order they appear here)
-  mainPanel(
-    # use fluidRow with aling='center' to center all text, vis ...
-    fluidRow(
-      column(width = 10, align = "center",
-    # start with actual output to display
-    h3(textOutput(outputId = 'caption')),
-    # start os vis
-    conditionalPanel(condition = "input.question_choose.includes('operation system')",  #condition needs to be in javascript code!
-                     h4(textOutput(outputId = 'os_heading')),
-                     textOutput(outputId = 'os'),
-                     plotOutput(outputId = 'osPlot', width = "60%")
-                     ), #end os vis
-    # start domain vis
-    conditionalPanel(condition = "input.question_choose.includes('domain')",
-                     h4(textOutput(outputId = 'dom_heading')),
-                     textOutput(outputId = 'dom'),
-                     conditionalPanel(condition = "input.plottype == 'barplot'",
-                                      plotOutput(outputId = 'domPlotbar')),
-                     conditionalPanel(condition = "input.plottype == 'circleplot'",
-                                      ggiraphOutput(outputId = 'domPlotcircle'))
-                     ), #end domain vis
-    # start occupation vis
-    conditionalPanel(condition = "input.question_choose.includes('occupation')",
-                     h4(textOutput(outputId = 'occ_heading')),
-                     textOutput(outputId = 'occ'),
-                     conditionalPanel(condition = "input.plottype == 'barplot'",
-                                      plotOutput(outputId = 'occPlotbar')),
-                     conditionalPanel(condition = "input.plottype == 'circleplot'",
-                                      ggiraphOutput(outputId = 'occPlotcircle'))
-                     ), #end occupation vis
-    # start reason attend vis
-    conditionalPanel(condition = "input.question_choose.includes('reason to attend')",
-                     h4(textOutput(outputId = 'reason_heading')),
-                     plotOutput(outputId = 'attendStem', width = "95%")
-                     ), #end reason attend vis
-    # start usage vis
-    conditionalPanel(condition = "input.question_choose.includes('usage of programs')",
-                     h4(textOutput(outputId = 'use_heading')),
-                     textOutput(outputId = 'use_text'),
-                     ggiraphOutput(outputId = 'useViolin')
-                     ), #end usage vis
-    # start skill vis
-    conditionalPanel(condition = "input.question_choose.includes('skills')",
-                     h4(textOutput(outputId = 'skill_heading')),
-                     textOutput(outputId = 'skill_text'),
-                     ggiraphOutput(outputId = 'skillViolin')
-                     ) #end skill vis
-  )) # end fluid row
-  ) # end mainPanel
-  ) # end pageWithSidebar
+  # ----- start first panel -----
+  tabsetPanel(
+    tabPanel('Pre-Workshop Survey',
+             sidebarLayout(
+               
+               # sidebar with controls to select variables to plot etc.
+               sidebarPanel(
+                 # make a checkbox to choose which questions to display
+                 checkboxGroupInput(inputId = 'question_choose', label = 'Choose which questions to display', 
+                                    choices = c('operation system','domain','occupation','reason to attend','usage of programs','skills'), 
+                                    selected = 'operation system', inline = FALSE
+                 ), # end checkbox
+                 # make a slider to choose how many domains/careers to show depending on percentage
+                 sliderInput(inputId = 'percent_choose', label = 'Choose how many categories to show (based on percentage)',
+                             min = 0, max = 20, value = 2, step = 1, round = TRUE, pre = 'categories > ', post = '%', dragRange = FALSE
+                 ), # end slider
+                 # make drop down selection menu to choose a plot type for domain and occupation
+                 selectInput(inputId = 'plottype', label = 'Choose a plot type for domain and career stage:',
+                             choices = c('circleplot','barplot')
+                 ) # end select
+               ), # end sidebarPanel
+               
+               # main panel with text and visualisations
+               # (text and vis are shown in the order they appear here)
+               mainPanel(
+                 # use fluidRow with aling='center' to center all text, vis ...
+                 fluidRow(
+                   column(width = 10, align = "center",
+                          # start with actual output to display
+                          h3(textOutput(outputId = 'caption_pre')),
+                          # start os vis
+                          conditionalPanel(condition = "input.question_choose.includes('operation system')",  #condition needs to be in javascript code!
+                                           h4(textOutput(outputId = 'os_heading')),
+                                           textOutput(outputId = 'os'),
+                                           plotOutput(outputId = 'osPlot', width = "60%")
+                          ), #end os vis
+                          # start domain vis
+                          conditionalPanel(condition = "input.question_choose.includes('domain')",
+                                           h4(textOutput(outputId = 'dom_heading')),
+                                           textOutput(outputId = 'dom'),
+                                           conditionalPanel(condition = "input.plottype == 'barplot'",
+                                                            plotOutput(outputId = 'domPlotbar')),
+                                           conditionalPanel(condition = "input.plottype == 'circleplot'",
+                                                            ggiraphOutput(outputId = 'domPlotcircle', width = "80%"))
+                          ), #end domain vis
+                          # start occupation vis
+                          conditionalPanel(condition = "input.question_choose.includes('occupation')",
+                                           h4(textOutput(outputId = 'occ_heading')),
+                                           textOutput(outputId = 'occ'),
+                                           conditionalPanel(condition = "input.plottype == 'barplot'",
+                                                            plotOutput(outputId = 'occPlotbar')),
+                                           conditionalPanel(condition = "input.plottype == 'circleplot'",
+                                                            girafeOutput(outputId = 'occPlotcircle'))
+                          ), #end occupation vis
+                          # start reason attend vis
+                          conditionalPanel(condition = "input.question_choose.includes('reason to attend')",
+                                           h4(textOutput(outputId = 'reason_heading')),
+                                           plotOutput(outputId = 'attendStem', width = "95%")
+                          ), #end reason attend vis
+                          # start usage vis
+                          conditionalPanel(condition = "input.question_choose.includes('usage of programs')",
+                                           h4(textOutput(outputId = 'use_heading')),
+                                           textOutput(outputId = 'use_text'),
+                                           girafeOutput(outputId = 'useViolin')
+                          ), #end usage vis
+                          # start skill vis
+                          conditionalPanel(condition = "input.question_choose.includes('skills')",
+                                           h4(textOutput(outputId = 'skill_pre_heading')),
+                                           textOutput(outputId = 'skill_pre_text'),
+                                           girafeOutput(outputId = 'skill_pre_Violin')
+                          ) #end skill vis
+                   )) # end fluid row
+               ) # end mainPanel
+             )  #end sidebarLayout
+    ), # end tabPanel 1
+    
+    # ----- start second panel -----
+    tabPanel('Post-Workshop Survey',
+            sidebarLayout(
+              sidebarPanel(
+                # make a checkbox to choose which questions to display
+                checkboxGroupInput(inputId = 'question_post_choose', label = 'Choose which questions to display', 
+                                   choices = c('skills'), 
+                                   selected = 'skills', inline = FALSE
+                ), # end checkbox
+                # make checkbox asking whether displaying the pre-workshop skill only when skills are chosen in questions
+                conditionalPanel(condition = "input.question_post_choose.includes('skills')",
+                                 checkboxInput(inputId = 'show_pre_skill', label = 'show pre-workshop skills (in blue)', value = FALSE)
+                ) # end checkbox 2
+              ), #end sidbarPanel
+              mainPanel(
+                fluidRow(
+                  column(width = 10, align = "center",
+                         h3(textOutput(outputId = 'caption_post')),
+                         # start skill vis
+                         conditionalPanel(condition = "input.question_post_choose.includes('skills')",
+                                          # check whether post skill alone or pre and post skill displayed together
+                                          h4(textOutput(outputId = 'skill_post_heading')),
+                                          textOutput(outputId = 'skill_post_text'),
+                                          conditionalPanel(condition = "input.show_pre_skill == 0",
+                                                           ggiraphOutput(outputId = 'skill_post_Violin')
+                                                           ),
+                                          conditionalPanel(condition = "input.show_pre_skill == 1",
+                                                           ggiraphOutput(outputId = 'skill_pre_post_Violin')
+                                                           )
+                                          ) #end of conditional panel for skills
+                  )) # end fluid row
+             )# end mainPanel
+            ) #end sidbarLayout
+    ) #end tabPanel 2
+  ) #end tabsetPanel
 ) # end shinyUI
 
 
@@ -366,17 +424,18 @@ ui <- shinyUI(
 # ----- define server logic required to plot various variables -----
 server <- shinyServer(function(input, output){
   
-  # compute the formula text in a reactive expression since it is 
-  # shared by the output$caption and output$osPlot expressions
-  formulaText <- reactive({
+  # ----- headings of panels -----
+  output$caption_pre <- renderText({
     paste('Results from the pre-workshop survey for your upcoming ', 
           workshoptype, 'Workshop')
-  })
-  # return the formula text for printing as a caption
-  output$caption <- renderText({
-    formulaText()
+    })
+  
+  output$caption_post <- renderText({
+    paste('Results from the post-workshop survey for your ', 
+          workshoptype, 'Workshop')
   })
   
+
   # ----- operation system ---
   output$os_heading <- renderText({
     'Which operation system do the participants have?'
@@ -418,12 +477,24 @@ server <- shinyServer(function(input, output){
     'Average usage of all participants on top of distribution (usage levels were translated to scores 1 to 6 before calculations)'
   })
   
-  # ----- skills -----
-  output$skill_heading <- renderText({
+  # ----- skills pre -----
+  output$skill_pre_heading <- renderText({
     'What are the programming skills of participants?'
   })
-  output$skill_text <- renderText({
+  output$skill_pre_text <- renderText({
     'Average skills of all participants on top of distribution (agreement levels were translated to scores 1 to 5 before calculations)'
+  })
+  
+  # ----- skills post -----
+  output$skill_post_heading <- renderText({
+    'What are the programming skills of participants?'
+  })
+  output$skill_post_text <- renderText({
+    'Average skills of all participants on top of distribution (agreement levels were translated to scores 1 to 5 before calculations)'
+    })
+  output$skill_prepost_text <- renderText({
+    'Average skills of all participants on top of distribution (agreement levels were translated to scores 1 to 5 before calculations),
+    post workshop answers are displayed in red, pre workshop answers in blue'
   })
   
   
@@ -497,12 +568,30 @@ server <- shinyServer(function(input, output){
     violin_plot(usage_fact, usage_levels_mean)
   }) #end plot 5
   
-  # ----- start plot 6 - violin plot of skill ----
-  output$skillViolin <- renderggiraph({
-    violin_plot(skill_lnum, skill_mean)
+  # ----- start plot 6 - violin plot of pre skill ----
+  output$skill_pre_Violin <- renderggiraph({
+    violin_plot(skill_pre_lnum, skill_pre_mean, girafe = TRUE)
   }) #end plot 6
   
+  # ----- start plot 7 - violin plot of post skill ----
+  output$skill_post_Violin <- renderggiraph({
+    violin_plot(skill_post_lnum, skill_post_mean, col_violin = 'pink', col_point = 'red', girafe = TRUE)
+  }) #end plot 7
   
+  # ----- start plot 8 - violin plot of pre-post skill ----
+  output$skill_pre_post_Violin <- renderggiraph({
+    # make plot of pre-skills
+    violin_pre <- violin_plot(skill_pre_lnum, skill_pre_mean, girafe = FALSE)
+    violin_post <- violin_plot(skill_post_lnum, skill_post_mean, col_violin = 'pink', col_point = 'red', girafe = FALSE)
+    # add parts for post-skills
+    violin_post2 <- violin_pre + 
+      geom_violin(data = skill_post_lnum, aes(x = question, y = level_weight), color = NA, fill = 'pink', alpha = 0.3) + 
+     geom_point_interactive(data = skill_post_mean, aes(x = question, y = mean_level, 
+                                                  tooltip = paste('mean score =', as.character(round(mean_level,1))), data_id = as.character(round(mean_level,1))), 
+                          size = 3, color = 'red')
+    # make interactive object
+    girafe(ggobj = violin_post2)
+    }) #end plot 8
   
 }) # end server
 
